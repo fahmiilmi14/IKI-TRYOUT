@@ -1,0 +1,503 @@
+/* General Styling (keep as is from previous step) */
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #FFC107;
+    --dark-color: #333;
+    --light-color: #f4f4f4;
+    --white-color: #fff;
+    --gray-light: #eee;
+    --gray-dark: #555;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    color: var(--dark-color);
+    background-color: var(--light-color);
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    overflow: hidden;
+    padding: 0 20px;
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--secondary-color);
+}
+
+ul {
+    list-style: none;
+}
+
+h1, h2, h3, h4 {
+    margin-bottom: 1rem;
+    color: var(--dark-color);
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+/* Buttons (keep as is from previous step) */
+.btn-primary, .btn-secondary {
+    display: inline-block;
+    background: var(--primary-color);
+    color: var(--white-color);
+    padding: 10px 20px;
+    border-radius: 38px;
+    text-align: center;
+    transition: background 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: var(--dark-color);
+}
+
+.btn-secondary:hover {
+    background: #FFD700;
+}
+
+/* Header (keep as is from previous step) */
+header {
+    background: var(--white-color);
+    color: var(--dark-color);
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--gray-light);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .logo {
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: var(--primary-color);
+}
+
+header nav ul {
+    display: flex;
+}
+
+header nav ul li {
+    margin-left: 20px;
+}
+
+header nav ul li a {
+    color: var(--dark-color);
+    font-weight: 600;
+    padding: 5px 0;
+    position: relative;
+}
+
+header nav ul li a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    bottom: 0;
+    left: 0;
+    transition: width 0.3s ease;
+}
+
+header nav ul li a:hover::after {
+    width: 100%;
+}
+
+/* Hero Section (keep as is from previous step) */
+.hero-section {
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://via.placeholder.com/1600x900/007bff/FFFFFF?text=STUDY+BACKGROUND') no-repeat center center/cover;
+    color: var(--white-color);
+    padding: 100px 0;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 500px;
+}
+
+.hero-content {
+    max-width: 800px;
+}
+
+.hero-content h2 {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    color: var(--white-color);
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    opacity: 0.9;
+}
+
+
+/* About Section (keep as is from previous step) */
+.about-section {
+    padding: 80px 0;
+    text-align: center;
+    background: var(--white-color);
+}
+
+.about-section h3 {
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.feature-item {
+    background: var(--gray-light);
+    padding: 30px;
+    border-radius: 38px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.feature-item i {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    display: block;
+}
+
+.feature-item h4 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+
+/* --- New/Modified Styles for Pop-up and Subtest List --- */
+
+/* Modal (Pop-up) */
+.modal {
+    display: flex; /* Flexbox to center content */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+}
+
+.modal-content {
+    background-color: var(--white-color);
+    padding: 40px;
+    border-radius: 38px;
+    position: relative;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    text-align: center;
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+}
+
+@keyframes animatetop {
+    from {top: -300px; opacity: 0}
+    to {top: 0; opacity: 1}
+}
+
+#userNameInput {
+    width: calc(100% - 20px); /* Adjust for padding */
+    padding: 12px;
+    margin: 20px 0;
+    border: 1px solid var(--gray-light);
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+#saveNameBtn {
+    margin-top: 10px;
+    width: auto; /* Allow button to size naturally */
+}
+
+/* Subtest Section */
+.tryout-section { /* Reusing this class from previous structure */
+    padding: 80px 0;
+    text-align: center;
+    background: var(--light-color);
+}
+
+.tryout-section h3 {
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+}
+
+.subtest-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    justify-content: center;
+    align-items: stretch; /* Make cards same height */
+}
+
+.subtest-card {
+    background: var(--white-color);
+    padding: 30px;
+    border-radius: 38px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent; /* Default border */
+}
+
+.subtest-card:hover:not(.completed) { /* Only hover if not completed */
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.subtest-card h4 {
+    font-size: 1.6rem;
+    color: var(--dark-color);
+    margin-bottom: 10px;
+}
+
+.subtest-card p {
+    font-size: 0.95rem;
+    color: var(--gray-dark);
+    flex-grow: 1; /* Allow text to take space */
+    margin-bottom: 15px;
+}
+
+.subtest-card .score {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-top: 10px;
+}
+
+.subtest-card.completed {
+    border-color: var(--primary-color); /* Highlight completed cards */
+    background-color: #e6f7ff; /* Lighter background for completed */
+    opacity: 0.9;
+    cursor: default;
+}
+
+.subtest-card.completed .btn-primary {
+    background-color: var(--gray-dark);
+    cursor: default;
+}
+.subtest-card.completed .btn-primary:hover {
+    background-color: var(--gray-dark); /* No hover effect for completed */
+}
+
+
+/* --- Specific Tryout Page Styling (from previous step, unchanged for tryout.html) --- */
+.tryout-container {
+    padding: 80px 20px;
+    max-width: 800px;
+    margin: auto;
+    text-align: center;
+    background-color: var(--white-color);
+    border-radius: 38px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+
+.tryout-container h2 {
+    margin-bottom: 20px;
+    font-size: 2.2rem;
+    color: var(--dark-color);
+}
+
+.tryout-container #timer {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+#tryoutForm .question-block {
+    background-color: var(--light-color);
+    border: 1px solid #ddd;
+    border-radius: 38px;
+    padding: 25px;
+    margin-bottom: 25px;
+    text-align: left;
+    display: none;
+}
+
+#tryoutForm .question-block.active {
+    display: block;
+}
+
+#tryoutForm .question-block p.question-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: var(--dark-color);
+}
+
+#tryoutForm .question-block .options label {
+    display: block;
+    background-color: var(--white-color);
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    border: 1px solid #eee;
+}
+
+#tryoutForm .question-block .options label:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+#tryoutForm .question-block .options input[type="radio"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+.navigation-buttons {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.navigation-buttons button {
+    padding: 12px 25px;
+    border-radius: 38px;
+    font-size: 1rem;
+}
+
+.navigation-buttons button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    color: var(--gray-dark);
+}
+
+#submitBtn {
+    background-color: #dc3545;
+}
+
+#submitBtn:hover {
+    background-color: #c82333;
+}
+
+#result {
+    margin-top: 40px;
+    padding: 30px;
+    background-color: #e6f7ff;
+    border-radius: 38px;
+    border: 2px solid var(--primary-color);
+    color: var(--dark-color);
+}
+
+#result h3 {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+}
+
+#result p {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+/* Footer (keep as is from previous step) */
+footer {
+    background: var(--dark-color);
+    color: var(--white-color);
+    text-align: center;
+    padding: 40px 0;
+}
+
+footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+footer .social-links a {
+    color: var(--white-color);
+    margin: 0 10px;
+    font-size: 1.1rem;
+}
+
+footer .social-links a:hover {
+    color: var(--primary-color);
+}
+
+/* Responsive Design (keep as is from previous step) */
+@media (max-width: 768px) {
+    header .container {
+        flex-direction: column;
+    }
+
+    header nav ul {
+        margin-top: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    header nav ul li {
+        margin: 0 10px 10px 10px;
+    }
+
+    .hero-content h2 {
+        font-size: 2.5rem;
+    }
+
+    .hero-content p {
+        font-size: 1rem;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .subtest-card { /* Adjusted for smaller screens */
+        width: 100%;
+        margin: 15px 0;
+    }
+}

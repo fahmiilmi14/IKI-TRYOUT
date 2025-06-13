@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iki Aku Try Out</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="logo">IKI TRYOUT</h1>
+            <nav>
+                <ul>
+                    <li><a href="#hero">Beranda</a></li>
+                    <li><a href="#about">Tentang Kami</a></li>
+                    <li><a href="#tryout">Mulai Tryout</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="#contact">Kontak</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Siap Hadapi SNBT/TKA 2026?</h2>
+                    <p>Uji kemampuanmu dengan tryout SNBT dari IKI AKU. Dapatkan analisis mendalam dan strategi terbaik untuk meraih impianmu!</p>
+                    <a href="#tryout" class="btn-primary">Mulai Tryout Sekarang!</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about-section">
+            <div class="container">
+                <h3>Mengapa Memilih Kami?</h3>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <i class="icon-lamp">💡</i>
+                        <h4>Soal Up-to-Date</h4>
+                        <p>Soal-soal kami disesuaikan dengan format dan materi terbaru SNBT.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="icon-chart">📈</i>
+                        <h4>Analisis Mendalam</h4>
+                        <p>Dapatkan laporan hasil lengkap dan rekomendasi belajar personal.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="icon-time">⏱️</i>
+                        <h4>Simulasi Waktu Nyata</h4>
+                        <p>Rasakan pengalaman tryout SNBT dengan batasan waktu yang realistis.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tryout" class="tryout-section">
+            <div class="container">
+                <h3>Pilih Paket Tryoutmu</h3>
+                <div class="package-card">
+                    <h4>IKI TRYOUT #1</h4>
+                    <p>Akses 1x Tryout Penuh</p>
+                    <ul class="features-list">
+                        <li>Soal Lengkap</li>
+                        <li>Waktu Ujian</li>
+                        <li>Laporan Hasil</li>
+                    </ul>
+                    <a href="coba.html" class="btn-secondary">Pilih Paket</a>
+                </div>
+                <div class="package-card">
+                    <h4>Paket Premium</h4>
+                    <p>Akses 3x Tryout Penuh + Pembahasan</p>
+                    <ul class="features-list">
+                        <li>Semua di Paket Reguler</li>
+                        <li>3x Tryout</li>
+                        <li>Pembahasan Soal</li>
+                        <li>Konsultasi Singkat</li>
+                    </ul>
+                    <a href="tryout_premium.html" class="btn-secondary">Pilih Paket</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="faq-section">
+            <div class="container">
+                <h3>Pertanyaan Umum</h3>
+                <div class="faq-item">
+                    <button class="accordion">Bagaimana cara mendaftar tryout?</button>
+                    <div class="panel">
+                        <p>Pilih paket tryout yang Anda inginkan, lalu klik tombol "Pilih Paket" untuk mengisi formulir pendaftaran dan memulai tryout.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="accordion">Apakah ada pembahasan soal setelah tryout?</button>
+                    <div class="panel">
+                        <p>Pembahasan soal tersedia untuk Paket Premium. Untuk Paket Reguler, Anda hanya mendapatkan laporan hasil.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 IKI TRYOUT. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#" target="_blank">Facebook</a>
+                <a href="#" target="_blank">Instagram</a>
+            </div>
+        </div>
+    </footer>
+
+    <div id="welcomeModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h4>Selamat Datang di IKI TRYOUT</h4>
+            <p>Bersiaplah untuk meraih nilai terbaikmu. Uji kemampuanmu sekarang!</p>
+            <button class="btn-primary" onclick="closeWelcomeModal()">Mulai Jelajahi</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

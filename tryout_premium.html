@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tryout SNBT Premium - SNBT Sukses</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .form-page-container {
+            padding: 80px 20px;
+            max-width: 800px;
+            margin: auto;
+            text-align: center;
+        }
+        .form-page-container h2 {
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            color: var(--dark-color);
+        }
+        .custom-form {
+            background-color: var(--white-color);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+        .custom-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        .custom-form input[type="text"],
+        .custom-form input[type="email"],
+        .custom-form input[type="tel"],
+        .custom-form select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--gray-light);
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box; /* Pastikan padding tidak menambah lebar */
+        }
+        .custom-form input[type="submit"] {
+            width: auto; /* Agar tidak selebar input lainnya */
+            padding: 12px 30px;
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+        }
+        .custom-form input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="logo">Tryout SNBT</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html#hero">Beranda</a></li>
+                    <li><a href="index.html#about">Tentang Kami</a></li>
+                    <li><a href="index.html#tryout">Pilih Paket Lain</a></li>
+                    <li><a href="index.html#faq">FAQ</a></li>
+                    <li><a href="index.html#contact">Kontak</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="form-page-container">
+            <h2>Pendaftaran Tryout SNBT Paket Premium</h2>
+            <p>Isi data diri Anda di bawah ini untuk mengaktifkan akses tryout premium Anda.</p>
+            <div class="custom-form">
+                <form action="#" method="POST"> <label for="nama">Nama Lengkap</label>
+                    <input type="text" id="nama" name="nama" required>
+
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+
+                    <label for="telepon">Nomor Telepon</label>
+                    <input type="tel" id="telepon" name="telepon" required>
+
+                    <label for="asal_sekolah">Asal Sekolah</label>
+                    <input type="text" id="asal_sekolah" name="asal_sekolah" required>
+
+                    <label for="jenjang">Jenjang Pendidikan</label>
+                    <select id="jenjang" name="jenjang" required>
+                        <option value="">Pilih Jenjang</option>
+                        <option value="SMA">SMA/SMK</option>
+                        <option value="GapYear">Gap Year</option>
+                    </select>
+
+                    <input type="submit" value="Daftar & Mulai Tryout">
+                </form>
+            </div>
+            <p style="margin-top: 30px;">Setelah pendaftaran, Anda akan menerima email dengan instruksi untuk mengakses tryout.</p>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Tryout SNBT Sukses. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#" target="_blank">Facebook</a>
+                <a href="#" target="_blank">Instagram</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

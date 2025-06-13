@@ -1,0 +1,310 @@
+/* General Styling (from your provided CSS) */
+:root {
+    --primary-color: #007bff; /* Biru terang, menggantikan hijau awal */
+    --secondary-color: #FFC107; /* Amber */
+    --dark-color: #333;
+    --light-color: #f4f4f4;
+    --white-color: #fff;
+    --gray-light: #eee;
+    --gray-dark: #555;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    color: var(--dark-color);
+    background-color: var(--light-color);
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    overflow: hidden;
+    padding: 0 20px;
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--secondary-color);
+}
+
+ul {
+    list-style: none;
+}
+
+h1, h2, h3, h4 {
+    margin-bottom: 1rem;
+    color: var(--dark-color);
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+/* Buttons (from your provided CSS, with slight adjustment for tryout) */
+.btn-primary, .btn-secondary {
+    display: inline-block;
+    background: var(--primary-color);
+    color: var(--white-color);
+    padding: 10px 20px;
+    border-radius: 38px;
+    text-align: center;
+    transition: background 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-weight: 600; /* Added for consistency */
+}
+
+.btn-primary:hover {
+    background: #0056b3; /* Darker blue */
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: var(--dark-color);
+}
+
+.btn-secondary:hover {
+    background: #FFD700; /* Darker amber */
+}
+
+/* Header (from your provided CSS) */
+header {
+    background: var(--white-color);
+    color: var(--dark-color);
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--gray-light);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .logo {
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: var(--primary-color);
+}
+
+header nav ul {
+    display: flex;
+}
+
+header nav ul li {
+    margin-left: 20px;
+}
+
+header nav ul li a {
+    color: var(--dark-color);
+    font-weight: 600;
+    padding: 5px 0;
+    position: relative;
+}
+
+header nav ul li a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    bottom: 0;
+    left: 0;
+    transition: width 0.3s ease;
+}
+
+header nav ul li a:hover::after {
+    width: 100%;
+}
+
+/* --- Specific Tryout Page Styling (Modified/Added based on previous code and new primary color) --- */
+
+.tryout-container {
+    padding: 80px 20px;
+    max-width: 800px;
+    margin: auto;
+    text-align: center;
+    background-color: var(--white-color);
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+
+.tryout-container h2 {
+    margin-bottom: 20px;
+    font-size: 2.2rem;
+    color: var(--dark-color);
+}
+
+.tryout-container #timer {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-color); /* Uses primary color */
+    margin-bottom: 20px;
+}
+
+/* Form Styling */
+#tryoutForm .question-block {
+    background-color: var(--light-color); /* Using light-color from new root */
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 25px;
+    text-align: left;
+    display: none; /* Default hidden, JS will show current question */
+}
+
+#tryoutForm .question-block.active {
+    display: block; /* Show active question */
+}
+
+#tryoutForm .question-block p.question-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: var(--dark-color);
+}
+
+#tryoutForm .question-block .options label {
+    display: block;
+    background-color: var(--white-color); /* Changed to white for better contrast */
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    border-radius: 38px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    border: 1px solid #eee;
+}
+
+#tryoutForm .question-block .options label:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+#tryoutForm .question-block .options input[type="radio"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+/* Navigation Buttons (using .btn-primary and .btn-secondary classes) */
+.navigation-buttons {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.navigation-buttons button {
+    /* Base styles already provided by .btn-primary/.btn-secondary */
+    padding: 12px 25px; /* Adjust padding for a bit larger buttons */
+    border-radius: 38px; /* Slightly less rounded than 38px for form context */
+    font-size: 1rem;
+}
+
+.navigation-buttons button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    color: var(--gray-dark);
+}
+
+#submitBtn {
+    background-color: #dc3545; /* Bootstrap-like danger color */
+}
+
+#submitBtn:hover {
+    background-color: #c82333;
+}
+
+/* Result Section */
+#result {
+    margin-top: 40px;
+    padding: 30px;
+    background-color: #e6f7ff; /* Light blue background for results */
+    border-radius: 38px;
+    border: 2px solid var(--primary-color);
+    color: var(--dark-color);
+}
+
+#result h3 {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+}
+
+#result p {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+/* Footer (from your provided CSS) */
+footer {
+    background: var(--dark-color);
+    color: var(--white-color);
+    text-align: center;
+    padding: 40px 0;
+}
+
+footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+footer .social-links a {
+    color: var(--white-color);
+    margin: 0 10px;
+    font-size: 1.1rem;
+}
+
+footer .social-links a:hover {
+    color: var(--primary-color);
+}
+
+/* Responsive Design (from your provided CSS) */
+@media (max-width: 768px) {
+    header .container {
+        flex-direction: column;
+    }
+
+    header nav ul {
+        margin-top: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    header nav ul li {
+        margin: 0 10px 10px 10px;
+    }
+
+    .hero-content h2 {
+        font-size: 2.5rem;
+    }
+
+    .hero-content p {
+        font-size: 1rem;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .package-card {
+        width: 100%;
+        margin: 15px 0;
+    }
+}
