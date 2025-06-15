@@ -19,7 +19,7 @@ body {
     font-family: 'Poppins', sans-serif;
     line-height: 1.6;
     color: var(--dark-color);
-    background-color: var(--light-color);
+    background-color:#007bff ;
 }
 
 .container {
@@ -28,6 +28,15 @@ body {
     margin: auto;
     overflow: hidden;
     padding: 0 20px;
+}
+
+.container1 {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    overflow: hidden;
+    padding: 0 20px;
+    background-color: #555;
 }
 
 a {
@@ -55,7 +64,7 @@ p {
 /* Buttons (keep as is from previous step) */
 .btn-primary, .btn-secondary {
     display: inline-block;
-    background: var(--primary-color);
+    background:#FFC107 ;
     color: var(--white-color);
     padding: 10px 20px;
     border-radius: 38px;
@@ -446,7 +455,7 @@ header nav ul li a:hover::after {
 
 /* Footer (keep as is from previous step) */
 footer {
-    background: var(--dark-color);
+    background: #003166;
     color: var(--white-color);
     text-align: center;
     padding: 40px 0;
@@ -501,3 +510,4 @@ footer .social-links a:hover {
         margin: 15px 0;
     }
 }
+
