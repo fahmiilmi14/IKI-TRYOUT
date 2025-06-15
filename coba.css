@@ -75,10 +75,24 @@ p {
     font-weight: 600;
 }
 
+.btn-primary1 {
+    display: inline-block;
+    background:#007bff ;
+    color: var(--white-color);
+    padding: 10px 20px;
+    border-radius: 38px;
+    text-align: center;
+    transition: background 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
 .btn-primary:hover {
     background: #0056b3;
 }
-
+.btn-primary1:hover {
+    background: #FFC107;
+}
 .btn-secondary {
     background: var(--secondary-color);
     color: var(--dark-color);
