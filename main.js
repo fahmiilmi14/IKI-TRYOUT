@@ -106,14 +106,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h4>${subtest.name}</h4>
                 <p>${subtest.description}</p>
                 <p>Skor Anda: <span class="score">${subtestScore}</span></p>
-                <button class="btn-primary1" data-subtest-id="${subtest.id}" ${isCompleted ? 'disabled' : ''}>
+                <button class="btn-primary" data-subtest-id="${subtest.id}" ${isCompleted ? 'disabled' : ''}>
                     ${isCompleted ? 'Selesai Dikerjakan' : 'Mulai Tryout'}
                 </button>
             `;
             subtestContainer.appendChild(card);
         });
 
-        document.querySelectorAll('.subtest-card .btn-primary1').forEach(button => {
+        document.querySelectorAll('.subtest-card .btn-primary').forEach(button => {
             if (!button.disabled) {
                 button.addEventListener('click', (event) => {
                     const subtestId = event.target.dataset.subtestId;
