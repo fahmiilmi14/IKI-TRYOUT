@@ -488,3 +488,57 @@ footer .social-links a:hover {
         margin: 15px 0;
     }
 }
+/* --- Styling untuk Profil di Header (pojok kanan atas) --- */
+.profile-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin-left: auto; /* Mendorong ke kanan */
+}
+
+.profile-nav:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+}
+
+.profile-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+}
+
+.profile-nav span {
+    color: #007bff;
+    font-weight: 600;
+    font-size: 0.95em;
+    white-space: nowrap; /* Mencegah teks nama wrap */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Menambahkan elipsis jika nama terlalu panjang */
+    max-width: 100px; /* Batasi lebar nama */
+}
+
+/* Responsivitas untuk profile-nav */
+@media (max-width: 768px) {
+    .profile-nav {
+        margin-left: 0; /* Biarkan navigasi utama yang mengatur */
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background-color: transparent; /* Transparan di mobile */
+        padding: 0;
+    }
+    .profile-nav span {
+        display: none; /* Sembunyikan nama di mobile, hanya tampilkan foto */
+    }
+    .profile-thumb {
+        width: 35px;
+        height: 35px;
+    }
+}
