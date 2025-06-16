@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Peserta Tryout</title>
+    <link rel="stylesheet" href="profil.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-picture-display">
+                <img id="profilePicturePreview" src="https://via.placeholder.com/100" alt="Foto Profil" class="profile-img-preview">
+            </div>
+            <h1>Profil Peserta Tryout</h1>
+            <p>Selamat datang, <span id="userName">Peserta Tryout</span>!</p>
+        </div>
+
+        <div class="profile-section">
+            <h2>Pengaturan Akun</h2>
+            <div class="form-group">
+                <label for="userNameInput">Nama Lengkap:</label>
+                <input type="text" id="userNameInput" placeholder="Masukkan nama Anda">
+            </div>
+            <div class="profile-picture-upload">
+                <label for="profilePictureInput" class="upload-label">
+                    <img id="uploadPreview" src="https://via.placeholder.com/80" alt="Upload Foto" class="upload-placeholder-img">
+                    <span>Ubah Foto Profil</span>
+                </label>
+                <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                <p class="upload-note">Ukuran file maksimal 2MB. Format: JPG, PNG.</p>
+            </div>
+            <button id="saveAccountBtn" class="btn-primary">Simpan Perubahan Akun</button>
+        </div>
+
+        <div class="profile-section">
+            <h2>Analisis Hasil Tryout</h2>
+            <div class="score-summary">
+                <p>Subtes Terkuat Anda: <strong id="strongestSubtest">Belum ada data</strong></p>
+                <p>Rata-rata Skor Keseluruhan: <strong id="overallAverageScore">Belum ada data</strong></p>
+            </div>
+            <div class="chart-container">
+                <canvas id="subtestScoresChart"></canvas>
+            </div>
+            <p class="chart-note">Grafik di atas menunjukkan performa Anda di setiap subtes yang telah diselesaikan.</p>
+        </div>
+
+        <div class="profile-section">
+            <h2>Rencana Pendidikan</h2>
+            <p>Atur pilihan kampus dan jurusan impian Anda untuk SNBT.</p>
+            <div class="form-group">
+                <label for="campusInput">Kampus Pilihan:</label>
+                <input type="text" id="campusInput" placeholder="Contoh: Universitas Gadjah Mada">
+            </div>
+            <div class="form-group">
+                <label for="majorInput">Jurusan Pilihan:</label>
+                <input type="text" id="majorInput" placeholder="Contoh: Kedokteran">
+            </div>
+            <button id="saveEducationBtn" class="btn-primary">Simpan Pilihan Pendidikan</button>
+        </div>
+
+        <div class="profile-footer">
+            <button id="backToHomeBtn" class="btn-secondary">Kembali ke Beranda</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userNameSpan = document.getElementById('userName');
+            const userNameInput = document.getElementById('userNameInput'); // Input untuk nama user
+            const profilePictureInput = document.getElementById('profilePictureInput');
+            const uploadPreview = document.getElementById('uploadPreview'); // Preview di samping tombol upload
+            const profilePicturePreview = document.getElementById('profilePicturePreview'); // Preview di header profil
+            const saveAccountBtn = document.getElementById('saveAccountBtn');
+
+            const strongestSubtestSpan = document.getElementById('strongestSubtest');
+            const overallAverageScoreSpan = document.getElementById('overallAverageScore');
+            const subtestScoresChartCanvas = document.getElementById('subtestScoresChart');
+            const campusInput = document.getElementById('campusInput');
+            const majorInput = document.getElementById('majorInput');
+            const saveEducationBtn = document.getElementById('saveEducationBtn');
+            const backToHomeBtn = document.getElementById('backToHomeBtn');
+
+            // --- Ambil Data dari Local Storage ---
+            let userName = localStorage.getItem('snbtUserName') || 'Peserta Tryout';
+            const allTryoutData = JSON.parse(localStorage.getItem('snbtTryoutProgress')) || {};
+            const userProfileData = JSON.parse(localStorage.getItem('snbtUserProfile')) || {};
+            const profilePicture = localStorage.getItem('snbtProfilePicture');
+
+            // --- Init tampilan awal ---
+            userNameSpan.textContent = userName;
+            userNameInput.value = userName; // Set input nama dengan nama yang ada
+
+            if (profilePicture) {
+                profilePicturePreview.src = profilePicture;
+                uploadPreview.src = profilePicture;
+            } else {
+                profilePicturePreview.src = "https://via.placeholder.com/100"; // Placeholder default
+                uploadPreview.src = "https://via.placeholder.com/80"; // Placeholder default untuk upload
+            }
+
+            if (userProfileData.campus) {
+                campusInput.value = userProfileData.campus;
+            }
+            if (userProfileData.major) {
+                majorInput.value = userProfileData.major;
+            }
+
+            // --- Logika Upload Foto Profil ---
+            profilePictureInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    if (file.size > 2 * 1024 * 1024) { // 2MB
+                        alert('Ukuran file terlalu besar! Maksimal 2MB.');
+                        profilePictureInput.value = ''; // Reset input file
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const base64Image = e.target.result;
+                        localStorage.setItem('snbtProfilePicture', base64Image); // Simpan ke local storage
+                        profilePicturePreview.src = base64Image; // Update preview di header
+                        uploadPreview.src = base64Image; // Update preview di tombol upload
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // --- Simpan Perubahan Akun (Nama & Foto) ---
+            saveAccountBtn.addEventListener('click', () => {
+                const newUserName = userNameInput.value.trim();
+                if (newUserName) {
+                    localStorage.setItem('snbtUserName', newUserName);
+                    userNameSpan.textContent = newUserName; // Update nama di halaman profil
+                    alert('Nama dan foto profil berhasil diperbarui!');
+                } else {
+                    alert('Nama tidak boleh kosong!');
+                }
+            });
+
+
+            // --- Proses Data Tryout untuk Grafik dan Subtes Terkuat ---
+            const SUBTESTS = [
+                { id: 'pu', name: 'Penalaran Umum' },
+                { id: 'pk', name: 'Pengetahuan Kuantitatif' },
+                { id: 'pbm', name: 'Pengetahuan & Pemahaman Membaca' },
+                { id: 'ppu', name: 'Penalaran & Pengetahuan Umum' },
+                { id: 'bing', name: 'Bahasa Inggris' },
+                { id: 'bi', name: 'Bahasa Indonesia' },
+                { id: 'Penalaran matematika', name: 'Penalaran Matematika' } // Pastikan ID ini sesuai
+            ];
+
+            let chartLabels = [];
+            let chartData = [];
+            let totalScore = 0;
+            let completedSubtestsCount = 0;
+            let maxScore = -1;
+            let strongestSubtestName = 'N/A';
+
+            SUBTESTS.forEach(subtest => {
+                if (allTryoutData[subtest.id] && allTryoutData[subtest.id].completed) {
+                    const score = allTryoutData[subtest.id].score;
+                    chartLabels.push(subtest.name);
+                    chartData.push(score);
+                    totalScore += score;
+                    completedSubtestsCount++;
+
+                    if (score > maxScore) {
+                        maxScore = score;
+                        strongestSubtestName = subtest.name;
+                    }
+                }
+            });
+
+            strongestSubtestSpan.textContent = strongestSubtestName;
+            const averageScore = completedSubtestsCount > 0 ? (totalScore / completedSubtestsCount).toFixed(2) : 'Belum ada data';
+            overallAverageScoreSpan.textContent = averageScore;
+
+            // --- Gambar Grafik Menggunakan Chart.js ---
+            if (completedSubtestsCount > 0) {
+                new Chart(subtestScoresChartCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: chartLabels,
+                        datasets: [{
+                            label: 'Skor Subtes',
+                            data: chartData,
+                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 1000 // Sesuaikan dengan skala skor SNBT (0-1000)
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += context.parsed.y;
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                subtestScoresChartCanvas.style.display = 'none';
+                const chartContainer = subtestScoresChartCanvas.parentElement;
+                const noDataMessage = document.createElement('p');
+                noDataMessage.textContent = 'Belum ada data tryout untuk ditampilkan di grafik. Silakan selesaikan tryout terlebih dahulu!';
+                noDataMessage.style.textAlign = 'center';
+                noDataMessage.style.color = '#888';
+                chartContainer.appendChild(noDataMessage);
+            }
+
+            // --- Event Listener untuk Simpan Pilihan Pendidikan ---
+            saveEducationBtn.addEventListener('click', () => {
+                const updatedProfileData = {
+                    campus: campusInput.value.trim(),
+                    major: majorInput.value.trim()
+                };
+                localStorage.setItem('snbtUserProfile', JSON.stringify(updatedProfileData));
+                alert('Pilihan kampus dan jurusan berhasil disimpan!');
+            });
+
+            // --- Event Listener untuk Kembali ke Beranda (DIPERBAIKI) ---
+            // Menggunakan window.history.back() lebih fleksibel
+            backToHomeBtn.addEventListener('click', () => {
+                window.history.back(); // 
+            });
+        });
+    </script>
+</body>
+</html>
