@@ -12,6 +12,48 @@ document.querySelectorAll('nav a').forEach(anchor => {
         // Jika link mengarah ke halaman lain, biarkan default behavior (navigasi)
     });
 });
+document.addEventListener('DOMContentLoaded', () => {
+        const headerProfilePic = document.getElementById('headerProfilePic');
+        const headerUserName = document.getElementById('headerUserName');
+        const profileNav = document.getElementById('profileNav');
+
+        // Fungsi untuk memuat data profil
+        function loadProfileHeader() {
+            const userName = localStorage.getItem('snbtUserName') || 'Profil'; // Default 'Profil' jika belum ada nama
+            const profilePicture = localStorage.getItem('snbtProfilePicture');
+
+            headerUserName.textContent = userName;
+
+            if (profilePicture) {
+                headerProfilePic.src = profilePicture;
+            } else {
+                headerProfilePic.src = "https://via.placeholder.com/40"; // Placeholder default
+            }
+        }
+
+        // Panggil fungsi saat halaman dimuat
+        loadProfileHeader();
+
+        // Tambahkan event listener untuk navigasi ke halaman profil
+        if (profileNav) {
+            profileNav.addEventListener('click', () => {
+                window.location.href = 'profil.html'; // Arahkan ke halaman profil
+            });
+        }
+    });
+
+
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted) { // Memeriksa apakah halaman dimuat dari cache (misal: tombol back browser)
+            document.getElementById('headerUserName').textContent = localStorage.getItem('snbtUserName') || 'Profil';
+            const profilePicture = localStorage.getItem('snbtProfilePicture');
+            if (profilePicture) {
+                document.getElementById('headerProfilePic').src = profilePicture;
+            } else {
+                document.getElementById('headerProfilePic').src = "https://via.placeholder.com/40";
+            }
+        }
+    });
 
 // Welcome Modal functionality
 const welcomeModal = document.getElementById('welcomeModal');
