@@ -169,3 +169,33 @@ document.addEventListener('DOMContentLoaded', () => {
     checkUserName();
     console.log('main.js: Page initialization finished.');
 });
+document.addEventListener('DOMContentLoaded', () => {
+        const headerProfilePic = document.getElementById('headerProfilePic');
+        const headerUserName = document.getElementById('headerUserName');
+        const profileNav = document.getElementById('profileNav');
+
+        // Fungsi untuk memuat data profil
+        function loadProfileHeader() {
+            const userName = localStorage.getItem('snbtUserName') || 'Profil'; // Default 'Profil' jika belum ada nama
+            const profilePicture = localStorage.getItem('snbtProfilePicture');
+
+            headerUserName.textContent = userName;
+
+            if (profilePicture) {
+                headerProfilePic.src = profilePicture;
+            } else {
+                headerProfilePic.src = "https://via.placeholder.com/40"; // Placeholder default
+            }
+        }
+
+        // Panggil fungsi saat halaman dimuat
+        loadProfileHeader();
+
+        // Tambahkan event listener untuk navigasi ke halaman profil
+        if (profileNav) {
+            profileNav.addEventListener('click', () => {
+                window.location.href = 'profil.html'; // Arahkan ke halaman profil
+            });
+        }
+    });
+    
