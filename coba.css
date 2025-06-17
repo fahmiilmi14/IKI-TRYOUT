@@ -577,3 +577,70 @@ footer .social-links a:hover {
         height: 35px;
     }
 }
+
+
+
+.pembahasan-section {
+    padding: 80px 20px;
+    max-width: 900px;
+    margin: auto;
+    background-color: var(--white-color);
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+
+.pembahasan-section h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    color: var(--dark-color);
+}
+
+.question-pembahasan {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    background-color: var(--gray-light);
+}
+
+.question-pembahasan h4 {
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+.question-pembahasan p {
+    margin-bottom: 10px;
+    line-height: 1.8;
+}
+
+.question-pembahasan .options-pembahasan label {
+    display: block;
+    padding: 8px 0;
+    font-weight: 500;
+}
+
+.question-pembahasan .options-pembahasan label.user-answer {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.question-pembahasan .options-pembahasan label.correct-answer {
+    color: green;
+    font-weight: bold;
+}
+
+.question-pembahasan .options-pembahasan label.incorrect-answer {
+    color: red;
+    font-weight: bold;
+}
+
+.pembahasan-buttons {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.pembahasan-buttons .btn-primary {
+    margin: 0 10px;
+}
