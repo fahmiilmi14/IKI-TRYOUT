@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'ppu', name: 'Penalaran & Pengetahuan Umum', description: 'Menguji wawasan umum dan analitis.' },
         { id: 'bing', name: 'Bahasa Inggris', description: 'Menguji kemampuan bahasa Inggris Anda.' },
         { id: 'bi', name: 'Bahasa Indonesia', description: 'Menguji pemahaman kaidah bahasa Indonesia.' },
-        { id: 'Penalaran matematika', name: 'Penalaran matematika', description: 'Menguji kemampuan literasi baca-tulis.' }
+        { id: 'Penalaran matematika', name: 'Penalaran matematika', description: 'Menguji kemampuan Matematika dan penalaran anda.' }
     ];
 
     function checkUserName() {
