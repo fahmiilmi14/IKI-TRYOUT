@@ -18,7 +18,6 @@ const keyModal = document.getElementById("keyModal");
 
 async function loadEncryptedQuestions() {
     try {
-        console.log("1. Memulai loadEncryptedQuestions()...");
         const response = await fetch("soal.enc.json");
 
         if (!response.ok) {
@@ -26,21 +25,21 @@ async function loadEncryptedQuestions() {
         }
 
         const { data } = await response.json();
-        console.log("2. Data terenkripsi dari file (soal.enc.json):", data); 
+        
 
         
         if (!KUNCI_RAHASIA) {
-            console.error("3. Kunci rahasia belum diatur!");
+            
             throw new Error("Kunci rahasia belum diatur.");
         }
-        console.log("4. Kunci rahasia yang akan digunakan untuk dekripsi:", KUNCI_RAHASIA);
+        
 
         const bytes = CryptoJS.AES.decrypt(data, KUNCI_RAHASIA);
         const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-        console.log("5. Hasil dekripsi (string mentah):", decrypted);
+        
 
         if (!decrypted) {
-            console.error("6. Hasil dekripsi kosong. Kemungkinan besar kunci salah atau data rusak.");
+            
             
             localStorage.removeItem("tryoutAccessKey"); 
             throw new Error("Hasil dekripsi kosong, kemungkinan kunci salah atau data rusak.");
@@ -49,20 +48,20 @@ async function loadEncryptedQuestions() {
         let parsed;
         try {
             parsed = JSON.parse(decrypted);
-            console.log("7. Soal yang berhasil di-parse (objek JavaScript):", parsed);
+            
         } catch (parseError) {
-            console.error("8. Gagal parsing hasil dekripsi menjadi JSON. Error:", parseError.message);
+         
             
             localStorage.removeItem("tryoutAccessKey"); 
             throw new Error("Gagal parsing hasil dekripsi menjadi JSON. Data dekripsi mungkin rusak atau kunci salah.");
         }
         
-        console.log("currentSubtestId yang digunakan untuk filter:", currentSubtestId);
+      
         const filteredQuestions = parsed.filter(q => q.category === currentSubtestId);
-        console.log("9. Soal yang difilter berdasarkan kategori ('" + currentSubtestId + "'):", filteredQuestions);
+        
         
         if (filteredQuestions.length === 0) {
-            console.warn("10. Tidak ada soal ditemukan untuk kategori:", currentSubtestId, ". Pastikan kategori di soal.json sesuai.");
+            
             alert("Tidak ada soal tersedia untuk kategori ini. Pastikan kunci benar dan soal memiliki kategori yang sesuai.");
             localStorage.removeItem("tryoutAccessKey"); 
             keyModal.style.display = "flex"; 
@@ -135,17 +134,17 @@ async function initTryout() {
 }
 
 function displayQuestion() {
-    console.log("11. Memulai displayQuestion(). Current index:", currentQuestionIndex);
+    
 
     tryoutForm.innerHTML = ""; 
-    console.log("12. tryoutForm.innerHTML direset.");
+    
 
     const q = questions[currentQuestionIndex];
     if (!q) {
         console.warn("13. displayQuestion: Pertanyaan tidak ditemukan pada indeks:", currentQuestionIndex);
         return;
     }
-    console.log("14. Soal yang akan ditampilkan:", q);
+    
 
     const block = document.createElement("div");
     block.className = "question-block active"; 
@@ -153,7 +152,7 @@ function displayQuestion() {
     const text = document.createElement("p");
     text.innerHTML = q.question.replace(/\n/g, "<br>");
     block.appendChild(text);
-    console.log("15. Pertanyaan ditambahkan ke question-block.");
+    
 
     const options = document.createElement("div");
     options.className = "options"; 
@@ -175,25 +174,25 @@ function displayQuestion() {
             
             localStorage.setItem(`currentQuestionIndex_${currentSubtestId}`, currentQuestionIndex);
             
-            console.log(`Jawaban soal ${q.id} disimpan: ${e.target.value}`);
+           
         };
         
         label.appendChild(input);
         label.appendChild(document.createTextNode(opt));
         options.appendChild(label);
-        console.log(`  Opsi "${opt}" ditambahkan.`);
+       
     });
 
     block.appendChild(options);
-    console.log("16. Opsi jawaban ditambahkan ke question-block.");
+    
 
     tryoutForm.appendChild(block);
-    console.log("17. Question-block disisipkan ke dalam tryoutForm.");
+    
 
     prevBtn.style.display = currentQuestionIndex === 0 ? "none" : "inline-block";
     nextBtn.style.display = currentQuestionIndex === questions.length - 1 ? "none" : "inline-block";
     submitBtn.style.display = currentQuestionIndex === questions.length - 1 ? "inline-block" : "none";
-    console.log("18. Status tombol navigasi diperbarui.");
+    
 }
 
 function startTimer() {
