@@ -334,8 +334,8 @@ window.addEventListener("DOMContentLoaded", () => {
     const headerProfilePic = document.getElementById("headerProfilePic");
     const headerUserName = document.getElementById("headerUserName");
 
-    const userName = localStorage.getItem("userName") || "Profil";
-    const userProfilePic = localStorage.getItem("userProfilePic") || "https://via.placeholder.com/40";
+    const userName = localStorage.getItem("snbtUserName") || "Profil";
+    const userProfilePic = localStorage.getItem("snbtProfilePicture") || "https://via.placeholder.com/40";
 
     if (headerUserName) {
         headerUserName.textContent = userName;
