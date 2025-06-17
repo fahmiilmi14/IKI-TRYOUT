@@ -209,22 +209,21 @@ function scaleTheta(theta, minT = -3, maxT = 3, minS = 300, maxS = 1000) {
 
 function submitTryout() {
     clearInterval(timerInterval);
-    
+
     
     localStorage.removeItem(`timer_${currentSubtestId}`);
     localStorage.removeItem(`answers_${currentSubtestId}`);
-    localStorage.removeItem(`currentQuestionIndex_${currentSubtestId}`); 
-    localStorage.removeItem("tryoutAccessKey"); 
+    localStorage.removeItem(`currentQuestionIndex_${currentSubtestId}`);
+    localStorage.removeItem("tryoutAccessKey");
 
     let benar = 0;
-    const answerDetails = []; 
+    const answerDetails = [];
 
     for (const q of questions) {
-        const userAnswer = userAnswers[q.id] || "Tidak Dijawab"; 
-        const isCorrect = userAnswer === q.correctAnswer; 
+        const userAnswer = userAnswers[q.id] || "Tidak Dijawab";
+        const isCorrect = userAnswer === q.correctAnswer;
         if (isCorrect) benar++;
-        
-        
+
         answerDetails.push({
             questionId: q.id,
             questionText: q.question,
@@ -254,13 +253,20 @@ function submitTryout() {
     `;
 
     
-    const encodedAnswerDetails = encodeURIComponent(JSON.stringify(answerDetails));
+    let snbtTryoutProgress = JSON.parse(localStorage.getItem('snbtTryoutProgress')) || {};
+    snbtTryoutProgress[currentSubtestId] = {
+        completed: true,
+        score: score,
+        answerDetails: answerDetails
+    };
+    localStorage.setItem('snbtTryoutProgress', JSON.stringify(snbtTryoutProgress));
 
     setTimeout(() => {
         
-        window.location.href = `coba.html?subtestId=${currentSubtestId}&score=${score}&answerDetails=${encodedAnswerDetails}`;
+        window.location.href = `coba.html?subtestId=${currentSubtestId}&score=${score}`;
     }, 3000);
 }
+
 
 
 nextBtn.onclick = () => {
