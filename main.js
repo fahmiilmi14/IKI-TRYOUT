@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const subtestContainer = document.getElementById('subtestContainer');
     const downloadCertificateBtn = document.getElementById('downloadCertificateBtn');
     const downloadMessage = document.getElementById('downloadMessage');
+    const viewPembahasanBtn = document.getElementById('viewPembahasanBtn'); 
 
     const SUBTESTS = [
         { id: 'pu', name: 'Penalaran Umum', description: 'Menguji kemampuan penalaran Anda.' },
@@ -62,13 +63,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function saveSubtestProgress(subtestId, score) {
+    
+    function saveSubtestProgress(subtestId, score, answerDetails) { 
         console.log(`main.js: saveSubtestProgress called for subtestId: ${subtestId}, score: ${score}`);
         const allTryoutData = getSubtestProgress();
         allTryoutData[subtestId] = {
             completed: true,
             score: score,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            answerDetails: answerDetails 
         };
         try {
             localStorage.setItem('snbtTryoutProgress', JSON.stringify(allTryoutData));
@@ -134,11 +137,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 downloadCertificateBtn.style.backgroundColor = '#28a745';
                 if (downloadMessage) downloadMessage.textContent = 'Semua subtes selesai! Klik untuk mengunduh sertifikat Anda.';
                 console.log('main.js: All subtests completed. Download button enabled.');
+                
+                if (viewPembahasanBtn) {
+                    viewPembahasanBtn.style.display = 'inline-block';
+                }
             } else {
                 downloadCertificateBtn.disabled = true;
                 downloadCertificateBtn.style.backgroundColor = '#ccc';
                 if (downloadMessage) downloadMessage.textContent = 'Selesaikan semua subtes untuk mengunduh sertifikat.';
                 console.log('main.js: Not all subtests completed. Download button disabled.');
+                
+                if (viewPembahasanBtn) {
+                    viewPembahasanBtn.style.display = 'none';
+                }
             }
         }
     }
@@ -146,8 +157,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (downloadCertificateBtn) {
         downloadCertificateBtn.addEventListener('click', () => {
             console.log('main.js: Download certificate button clicked. Redirecting to sertifikat.html');
-            
             window.location.href = 'sertifikat.html';
+        });
+    }
+
+    
+    if (viewPembahasanBtn) {
+        viewPembahasanBtn.addEventListener('click', () => {
+            window.location.href = 'pembahasan.html'; 
         });
     }
 
@@ -155,10 +172,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const completedSubtestId = urlParams.get('subtestId');
     const finalScore = urlParams.get('score');
+    
+    const answerDetailsString = urlParams.get('answerDetails');
+    let answerDetails = [];
+    if (answerDetailsString) {
+        try {
+            answerDetails = JSON.parse(decodeURIComponent(answerDetailsString));
+        } catch (e) {
+            console.error("main.js: Error parsing answerDetails from URL:", e);
+        }
+    }
+
 
     if (completedSubtestId && finalScore) {
         console.log(`main.js: Detected completed subtest. ID: ${completedSubtestId}, Score: ${finalScore}`);
-        saveSubtestProgress(completedSubtestId, parseInt(finalScore));
+        
+        saveSubtestProgress(completedSubtestId, parseInt(finalScore), answerDetails);
         
         window.history.replaceState({}, document.title, window.location.pathname);
         console.log('main.js: URL parameters cleared.');
