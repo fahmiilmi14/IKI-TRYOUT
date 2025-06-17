@@ -343,4 +343,12 @@ window.addEventListener("DOMContentLoaded", () => {
     if (headerProfilePic) {
         headerProfilePic.src = userProfilePic;
     }
+    const requestKeyBtn = document.querySelector('a[href="https://wa.me/6285732361586"]');
+    if (requestKeyBtn) {
+        const actualUserName = localStorage.getItem("userName") || "Pengguna";
+        const message = `Halo saya ${actualUserName}, ingin meminta kunci soal`;
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://wa.me/6285732361586?text=${encodedMessage}`;
+        requestKeyBtn.href = whatsappUrl;
+    }
 });
