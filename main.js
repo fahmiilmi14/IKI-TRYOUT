@@ -1,5 +1,3 @@
-// main.js
-
 document.addEventListener('DOMContentLoaded', () => {
     console.log('main.js: DOMContentLoaded event fired.');
 
@@ -148,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (downloadCertificateBtn) {
         downloadCertificateBtn.addEventListener('click', () => {
             console.log('main.js: Download certificate button clicked. Redirecting to sertifikat.html');
-            // Kita tidak perlu menyimpan data di localStorage lagi, karena sertifikat.html akan membacanya langsung
+            
             window.location.href = 'sertifikat.html';
         });
     }
@@ -161,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (completedSubtestId && finalScore) {
         console.log(`main.js: Detected completed subtest. ID: ${completedSubtestId}, Score: ${finalScore}`);
         saveSubtestProgress(completedSubtestId, parseInt(finalScore));
-        // Clear URL parameters after processing
+        
         window.history.replaceState({}, document.title, window.location.pathname);
         console.log('main.js: URL parameters cleared.');
     }
@@ -174,9 +172,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const headerUserName = document.getElementById('headerUserName');
         const profileNav = document.getElementById('profileNav');
 
-        // Fungsi untuk memuat data profil
+        
         function loadProfileHeader() {
-            const userName = localStorage.getItem('snbtUserName') || 'Profil'; // Default 'Profil' jika belum ada nama
+            const userName = localStorage.getItem('snbtUserName') || 'Profil'; 
             const profilePicture = localStorage.getItem('snbtProfilePicture');
 
             headerUserName.textContent = userName;
@@ -184,18 +182,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (profilePicture) {
                 headerProfilePic.src = profilePicture;
             } else {
-                headerProfilePic.src = "https://via.placeholder.com/40"; // Placeholder default
+                headerProfilePic.src = "https://via.placeholder.com/40"; 
             }
         }
 
-        // Panggil fungsi saat halaman dimuat
+        
         loadProfileHeader();
 
-        // Tambahkan event listener untuk navigasi ke halaman profil
+        
         if (profileNav) {
             profileNav.addEventListener('click', () => {
-                window.location.href = 'profil.html'; // Arahkan ke halaman profil
+                window.location.href = 'profil.html'; 
             });
         }
     });
-    
