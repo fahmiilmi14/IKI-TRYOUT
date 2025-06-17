@@ -1,8 +1,8 @@
-let KUNCI_RAHASIA = ""; // Ini akan diisi dari input modal atau localStorage
+let KUNCI_RAHASIA = ""; 
 let questions = [];
 let currentQuestionIndex = 0;
 let userAnswers = {};
-let timeLeft = 30 * 60; // 30 menit
+let timeLeft = 30 * 60; 
 let timerInterval;
 
 const currentSubtestId = localStorage.getItem("currentSubtestId") || "pu";
@@ -14,7 +14,7 @@ const timerDisplay = document.getElementById("timer");
 const resultDiv = document.getElementById("result");
 const keyModal = document.getElementById("keyModal");
 
-// --- Fungsi Utama ---
+
 
 async function loadEncryptedQuestions() {
     try {
@@ -28,7 +28,7 @@ async function loadEncryptedQuestions() {
         const { data } = await response.json();
         console.log("2. Data terenkripsi dari file (soal.enc.json):", data); 
 
-        // Pastikan KUNCI_RAHASIA sudah terisi dari modal atau localStorage
+        
         if (!KUNCI_RAHASIA) {
             console.error("3. Kunci rahasia belum diatur!");
             throw new Error("Kunci rahasia belum diatur.");
@@ -41,7 +41,7 @@ async function loadEncryptedQuestions() {
 
         if (!decrypted) {
             console.error("6. Hasil dekripsi kosong. Kemungkinan besar kunci salah atau data rusak.");
-            // Jika dekripsi gagal, hapus kunci dari localStorage agar modal muncul lagi
+            
             localStorage.removeItem("tryoutAccessKey"); 
             throw new Error("Hasil dekripsi kosong, kemungkinan kunci salah atau data rusak.");
         }
@@ -52,7 +52,7 @@ async function loadEncryptedQuestions() {
             console.log("7. Soal yang berhasil di-parse (objek JavaScript):", parsed);
         } catch (parseError) {
             console.error("8. Gagal parsing hasil dekripsi menjadi JSON. Error:", parseError.message);
-            // Jika parsing gagal, hapus kunci dari localStorage agar modal muncul lagi
+            
             localStorage.removeItem("tryoutAccessKey"); 
             throw new Error("Gagal parsing hasil dekripsi menjadi JSON. Data dekripsi mungkin rusak atau kunci salah.");
         }
@@ -64,20 +64,20 @@ async function loadEncryptedQuestions() {
         if (filteredQuestions.length === 0) {
             console.warn("10. Tidak ada soal ditemukan untuk kategori:", currentSubtestId, ". Pastikan kategori di soal.json sesuai.");
             alert("Tidak ada soal tersedia untuk kategori ini. Pastikan kunci benar dan soal memiliki kategori yang sesuai.");
-            localStorage.removeItem("tryoutAccessKey"); // Hapus kunci jika tidak ada soal yang cocok
+            localStorage.removeItem("tryoutAccessKey"); 
             keyModal.style.display = "flex"; 
             return [];
         }
 
-        // Jika semua berhasil, pastikan kunci tersimpan (akan dilakukan di submitKunci atau di initTryout)
-        // KUNCI_RAHASIA sudah diset, jadi ini harusnya tidak perlu diset lagi di sini.
-        // Cukup pastikan modal tidak muncul jika sudah ada kunci di localStorage.
+        
+        
+        
 
         return filteredQuestions;
     } catch (e) {
         alert("❌ Gagal memuat soal. Kunci salah, file rusak, atau masalah jaringan: " + e.message);
         console.error("Kesalahan dekripsi atau pemrosesan:", e);
-        // Penting: Jika ada error dekripsi, hapus kunci dari localStorage
+        
         localStorage.removeItem("tryoutAccessKey"); 
         keyModal.style.display = "flex"; 
         return [];
@@ -91,25 +91,25 @@ function submitKunci() {
         return;
     }
     KUNCI_RAHASIA = input;
-    // --- TAMBAHAN PENTING ---
-    // Simpan kunci di localStorage setelah berhasil dimasukkan
+    
+    
     localStorage.setItem("tryoutAccessKey", KUNCI_RAHASIA); 
-    // --- AKHIR TAMBAHAN ---
+    
     keyModal.style.display = "none";
     initTryout();
 }
 
 async function initTryout() {
-    // --- TAMBAHAN PENTING ---
-    // Coba muat currentQuestionIndex dari localStorage
+    
+    
     const savedQuestionIndex = localStorage.getItem(`currentQuestionIndex_${currentSubtestId}`);
     if (savedQuestionIndex !== null) {
         currentQuestionIndex = parseInt(savedQuestionIndex, 10);
         console.log("Melanjutkan dari soal indeks:", currentQuestionIndex);
     } else {
-        currentQuestionIndex = 0; // Mulai dari awal jika tidak ada yang tersimpan
+        currentQuestionIndex = 0; 
     }
-    // --- AKHIR TAMBAHAN ---
+    
 
     const data = await loadEncryptedQuestions();
     if (!data.length) {
@@ -171,10 +171,10 @@ function displayQuestion() {
         input.onchange = (e) => { 
             userAnswers[q.id] = e.target.value;
             localStorage.setItem(`answers_${currentSubtestId}`, JSON.stringify(userAnswers));
-            // --- TAMBAHAN PENTING ---
-            // Simpan indeks soal saat jawaban berubah (opsional, tapi baik untuk resume)
+            
+            
             localStorage.setItem(`currentQuestionIndex_${currentSubtestId}`, currentQuestionIndex);
-            // --- AKHIR TAMBAHAN ---
+            
             console.log(`Jawaban soal ${q.id} disimpan: ${e.target.value}`);
         };
         
@@ -247,11 +247,11 @@ function scaleTheta(theta, minT = -3, maxT = 3, minS = 300, maxS = 1000) {
 
 function submitTryout() {
     clearInterval(timerInterval);
-    // Hapus semua data yang berkaitan dengan tryout saat submit
+    
     localStorage.removeItem(`timer_${currentSubtestId}`);
     localStorage.removeItem(`answers_${currentSubtestId}`);
-    localStorage.removeItem(`currentQuestionIndex_${currentSubtestId}`); // Hapus juga indeks soal
-    localStorage.removeItem("tryoutAccessKey"); // Hapus kunci akses setelah tryout selesai
+    localStorage.removeItem(`currentQuestionIndex_${currentSubtestId}`); 
+    localStorage.removeItem("tryoutAccessKey"); 
 
     let benar = 0;
     const detail = [];
@@ -286,7 +286,7 @@ function submitTryout() {
     }, 3000);
 }
 
-// --- Event Listeners untuk Tombol Navigasi ---
+
 nextBtn.onclick = () => {
     const currentBlock = tryoutForm.querySelector('.question-block.active');
     if (currentBlock) {
@@ -295,9 +295,9 @@ nextBtn.onclick = () => {
 
     if (currentQuestionIndex < questions.length - 1) {
         currentQuestionIndex++;
-        // --- TAMBAHAN PENTING ---
+        
         localStorage.setItem(`currentQuestionIndex_${currentSubtestId}`, currentQuestionIndex);
-        // --- AKHIR TAMBAHAN ---
+        
         displayQuestion();
     }
 };
@@ -310,25 +310,25 @@ prevBtn.onclick = () => {
 
     if (currentQuestionIndex > 0) {
         currentQuestionIndex--;
-        // --- TAMBAHAN PENTING ---
+        
         localStorage.setItem(`currentQuestionIndex_${currentSubtestId}`, currentQuestionIndex);
-        // --- AKHIR TAMBAHAN ---
+        
         displayQuestion();
     }
 };
 
 submitBtn.onclick = submitTryout;
 
-// --- Inisialisasi Saat Halaman Dimuat ---
+
 window.addEventListener("DOMContentLoaded", () => {
-    const savedAccessKey = localStorage.getItem("tryoutAccessKey"); // Cek kunci di localStorage
+    const savedAccessKey = localStorage.getItem("tryoutAccessKey"); 
 
     if (savedAccessKey) {
-        KUNCI_RAHASIA = savedAccessKey; // Gunakan kunci yang tersimpan
-        keyModal.style.display = "none"; // Sembunyikan modal
-        initTryout(); // Langsung mulai tryout
+        KUNCI_RAHASIA = savedAccessKey; 
+        keyModal.style.display = "none"; 
+        initTryout(); 
     } else {
-        keyModal.style.display = "flex"; // Tampilkan modal jika kunci tidak ada
+        keyModal.style.display = "flex"; 
     }
 
     const headerProfilePic = document.getElementById("headerProfilePic");
