@@ -26,21 +26,14 @@ async function loadEncryptedQuestions() {
 
         const { data } = await response.json();
         
-
-        
         if (!KUNCI_RAHASIA) {
-            
             throw new Error("Kunci rahasia belum diatur.");
         }
         
-
         const bytes = CryptoJS.AES.decrypt(data, KUNCI_RAHASIA);
         const decrypted = bytes.toString(CryptoJS.enc.Utf8);
         
-
         if (!decrypted) {
-            
-            
             localStorage.removeItem("tryoutAccessKey"); 
             throw new Error("Hasil dekripsi kosong, kemungkinan kunci salah atau data rusak.");
         }
@@ -48,35 +41,24 @@ async function loadEncryptedQuestions() {
         let parsed;
         try {
             parsed = JSON.parse(decrypted);
-            
         } catch (parseError) {
-         
-            
             localStorage.removeItem("tryoutAccessKey"); 
             throw new Error("Gagal parsing hasil dekripsi menjadi JSON. Data dekripsi mungkin rusak atau kunci salah.");
         }
         
-      
         const filteredQuestions = parsed.filter(q => q.category === currentSubtestId);
         
-        
         if (filteredQuestions.length === 0) {
-            
             alert("Tidak ada soal tersedia untuk kategori ini. Pastikan kunci benar dan soal memiliki kategori yang sesuai.");
             localStorage.removeItem("tryoutAccessKey"); 
             keyModal.style.display = "flex"; 
             return [];
         }
 
-        
-        
-        
-
         return filteredQuestions;
     } catch (e) {
         alert("❌ Gagal memuat soal. Kunci salah, file rusak, atau masalah jaringan: " + e.message);
         console.error("Kesalahan dekripsi atau pemrosesan:", e);
-        
         localStorage.removeItem("tryoutAccessKey"); 
         keyModal.style.display = "flex"; 
         return [];
@@ -90,8 +72,6 @@ function submitKunci() {
         return;
     }
     KUNCI_RAHASIA = input;
-    
-    
     localStorage.setItem("tryoutAccessKey", KUNCI_RAHASIA); 
     
     keyModal.style.display = "none";
@@ -99,8 +79,6 @@ function submitKunci() {
 }
 
 async function initTryout() {
-    
-    
     const savedQuestionIndex = localStorage.getItem(`currentQuestionIndex_${currentSubtestId}`);
     if (savedQuestionIndex !== null) {
         currentQuestionIndex = parseInt(savedQuestionIndex, 10);
@@ -109,7 +87,6 @@ async function initTryout() {
         currentQuestionIndex = 0; 
     }
     
-
     const data = await loadEncryptedQuestions();
     if (!data.length) {
         console.warn("Inisialisasi Tryout: Tidak ada data soal yang dimuat.");
@@ -134,18 +111,14 @@ async function initTryout() {
 }
 
 function displayQuestion() {
-    
-
     tryoutForm.innerHTML = ""; 
     
-
     const q = questions[currentQuestionIndex];
     if (!q) {
-        console.warn("13. displayQuestion: Pertanyaan tidak ditemukan pada indeks:", currentQuestionIndex);
+        console.warn("displayQuestion: Pertanyaan tidak ditemukan pada indeks:", currentQuestionIndex);
         return;
     }
     
-
     const block = document.createElement("div");
     block.className = "question-block active"; 
     
@@ -153,7 +126,6 @@ function displayQuestion() {
     text.innerHTML = q.question.replace(/\n/g, "<br>");
     block.appendChild(text);
     
-
     const options = document.createElement("div");
     options.className = "options"; 
     q.options.forEach((opt, index) => {
@@ -170,29 +142,20 @@ function displayQuestion() {
         input.onchange = (e) => { 
             userAnswers[q.id] = e.target.value;
             localStorage.setItem(`answers_${currentSubtestId}`, JSON.stringify(userAnswers));
-            
-            
             localStorage.setItem(`currentQuestionIndex_${currentSubtestId}`, currentQuestionIndex);
-            
-           
         };
         
         label.appendChild(input);
         label.appendChild(document.createTextNode(opt));
         options.appendChild(label);
-       
     });
 
     block.appendChild(options);
-    
-
     tryoutForm.appendChild(block);
     
-
     prevBtn.style.display = currentQuestionIndex === 0 ? "none" : "inline-block";
     nextBtn.style.display = currentQuestionIndex === questions.length - 1 ? "none" : "inline-block";
     submitBtn.style.display = currentQuestionIndex === questions.length - 1 ? "inline-block" : "none";
-    
 }
 
 function startTimer() {
@@ -247,19 +210,29 @@ function scaleTheta(theta, minT = -3, maxT = 3, minS = 300, maxS = 1000) {
 function submitTryout() {
     clearInterval(timerInterval);
     
+    
     localStorage.removeItem(`timer_${currentSubtestId}`);
     localStorage.removeItem(`answers_${currentSubtestId}`);
     localStorage.removeItem(`currentQuestionIndex_${currentSubtestId}`); 
     localStorage.removeItem("tryoutAccessKey"); 
 
     let benar = 0;
-    const detail = [];
+    const answerDetails = []; 
 
     for (const q of questions) {
-        const jawaban = userAnswers[q.id] || "Tidak Dijawab";
-        const isBenar = jawaban === q.correctAnswer;
-        if (isBenar) benar++;
-        detail.push({ id: q.id, jawaban, benar: isBenar });
+        const userAnswer = userAnswers[q.id] || "Tidak Dijawab"; 
+        const isCorrect = userAnswer === q.correctAnswer; 
+        if (isCorrect) benar++;
+        
+        
+        answerDetails.push({
+            questionId: q.id,
+            questionText: q.question,
+            options: q.options,
+            userAnswer: userAnswer,
+            correctAnswer: q.correctAnswer,
+            isCorrect: isCorrect
+        });
     }
 
     const theta = estimateTheta(userAnswers, questions);
@@ -280,8 +253,12 @@ function submitTryout() {
         <p>Redirect ke beranda dalam 3 detik...</p>
     `;
 
+    
+    const encodedAnswerDetails = encodeURIComponent(JSON.stringify(answerDetails));
+
     setTimeout(() => {
-        window.location.href = `coba.html?subtestId=${currentSubtestId}&score=${score}`;
+        
+        window.location.href = `coba.html?subtestId=${currentSubtestId}&score=${score}&answerDetails=${encodedAnswerDetails}`;
     }, 3000);
 }
 
