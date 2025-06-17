@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
-        
+        /* Gaya khusus untuk halaman pembahasan */
         .pembahasan-section {
             padding: 80px 20px;
             max-width: 900px;
@@ -33,6 +33,11 @@
             border: 1px solid #ddd;
             border-radius: 15px;
             background-color: var(--gray-light);
+            display: none; /* Sembunyikan semua secara default, hanya yang aktif yang terlihat */
+        }
+
+        .question-pembahasan.active {
+            display: block; /* Tampilkan hanya yang aktif */
         }
 
         .question-pembahasan h4 {
@@ -74,6 +79,31 @@
         .pembahasan-buttons .btn-primary {
             margin: 0 10px;
         }
+
+        /* Gaya untuk tombol navigasi pembahasan */
+        .pembahasan-nav-buttons {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px; /* Tambahkan sedikit jarak */
+        }
+        .pembahasan-nav-buttons button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--primary-color);
+            color: white;
+            margin: 0 10px;
+            transition: background-color 0.3s ease;
+        }
+        .pembahasan-nav-buttons button:hover {
+            background-color: #0056b3; /* Darker shade of primary color */
+        }
+        .pembahasan-nav-buttons button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -101,6 +131,12 @@
             <h2>Pembahasan Tryout</h2>
             <div id="pembahasanContent">
                 </div>
+
+            <div class="pembahasan-nav-buttons">
+                <button id="prevPembahasanBtn" class="btn-primary">Kembali</button>
+                <button id="nextPembahasanBtn" class="btn-primary">Selanjutnya</button>
+            </div>
+            
             <div class="pembahasan-buttons">
                 <button id="pembahasanAiBtn" class="btn-primary">Pembahasan dengan AI (WhatsApp)</button>
             </div>
