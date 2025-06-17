@@ -1,7 +1,7 @@
 // pembahasan.js
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('pembahasan.js: DOMContentLoaded event fired.');
+    
 
     const pembahasanContent = document.getElementById('pembahasanContent');
     const pembahasanAiBtn = document.getElementById('pembahasanAiBtn');
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         allQuestionsForDisplay = []; // Reset global array
 
         // Urutan subtes yang diinginkan
-        const SUBTEST_ORDER = ['pk', 'pbm', 'ppu', 'bing', 'bi', 'Penalaran matematika']; // Sesuaikan ID di sini!
+        const SUBTEST_ORDER = ['pu'z'pk', 'pbm', 'ppu', 'bing', 'bi', 'Penalaran matematika']; // Sesuaikan ID di sini!
 
         // Mengumpulkan semua pertanyaan ke dalam satu array tunggal sesuai urutan
         SUBTEST_ORDER.forEach(subtestId => {
