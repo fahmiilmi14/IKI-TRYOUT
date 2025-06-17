@@ -345,7 +345,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
     const requestKeyBtn = document.querySelector('a[href="https://wa.me/6285732361586"]');
     if (requestKeyBtn) {
-        const actualUserName = localStorage.getItem("userName") || "Pengguna";
+        const actualUserName = localStorage.getItem("snbtUserName") || "Pengguna";
         const message = `Halo saya ${actualUserName}, ingin meminta kunci soal`;
         const encodedMessage = encodeURIComponent(message);
         const whatsappUrl = `https://wa.me/6285732361586?text=${encodedMessage}`;
