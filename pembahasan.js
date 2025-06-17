@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         }
-        
+
         
         localStorage.setItem('fullQuestionsDataForAI', JSON.stringify(fullQuestionsDataForAI));
     }
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'ppu', name: 'Penalaran & Pengetahuan Umum' },
             { id: 'bing', name: 'Bahasa Inggris' },
             { id: 'bi', name: 'Bahasa Indonesia' },
-            { id: 'Penalaran matematika', name: 'Penalaran matematika' } 
+            { id: 'Penalaran matematika', name: 'Penalaran matematika' }
         ];
         const subtest = SUBTESTS.find(s => s.id === id);
         return subtest ? subtest.name : id;
