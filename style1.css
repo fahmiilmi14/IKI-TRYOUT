@@ -1,4 +1,4 @@
-/* General Styling (from your provided CSS) */
+/* General Styling */
 :root {
     --primary-color: #007bff; /* Biru terang, menggantikan hijau awal */
     --secondary-color: #FFC107; /* Amber */
@@ -30,7 +30,8 @@ body {
     overflow: hidden;
     padding: 0 20px;
 }
-.btn-primary1 {
+
+.btn-primary1 { /* Custom button for modal */
     display: inline-block;
     background: #FFC107;
     color: var(--white-color);
@@ -65,7 +66,7 @@ p {
     margin-bottom: 1rem;
 }
 
-/* Buttons (from your provided CSS, with slight adjustment for tryout) */
+/* Buttons */
 .btn-primary, .btn-secondary {
     display: inline-block;
     background: var(--primary-color);
@@ -76,7 +77,7 @@ p {
     transition: background 0.3s ease;
     border: none;
     cursor: pointer;
-    font-weight: 600; /* Added for consistency */
+    font-weight: 600;
 }
 
 .btn-primary:hover {
@@ -92,7 +93,7 @@ p {
     background: #FFD700; /* Darker amber */
 }
 
-/* Header (from your provided CSS) */
+/* Header */
 header {
     background: var(--white-color);
     color: var(--dark-color);
@@ -143,7 +144,7 @@ header nav ul li a:hover::after {
     width: 100%;
 }
 
-/* --- Specific Tryout Page Styling (Modified/Added based on previous code and new primary color) --- */
+/* --- Specific Tryout Page Styling --- */
 
 .tryout-container {
     padding: 80px 20px;
@@ -155,6 +156,8 @@ header nav ul li a:hover::after {
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     margin-top: 30px;
     margin-bottom: 50px;
+    position: relative; /* Added for z-index context if needed */
+    z-index: 1; /* Ensure it's above other things potentially */
 }
 
 .tryout-container h2 {
@@ -166,25 +169,32 @@ header nav ul li a:hover::after {
 .tryout-container #timer {
     font-size: 1.2rem;
     font-weight: 600;
-    color: var(--primary-color); /* Uses primary color */
+    color: var(--primary-color);
     margin-bottom: 20px;
 }
 
-/* Form Styling */
+/* Form Styling - KEY FIX HERE */
+#tryoutForm {
+    min-height: 200px; /* Added min-height to ensure it takes space even when empty */
+}
+
 #tryoutForm .question-block {
     border: 1px solid #ddd;
     border-radius: 15px;
     padding: 25px;
     margin-bottom: 25px;
     text-align: left;
-    display: none; /* Default hidden, JS will show current question */
+    display: none; /* Default hidden, will be shown by JS using .active */
+    opacity: 0; /* Fade in effect */
+    transition: opacity 0.3s ease-in-out; /* Smooth transition */
 }
 
 #tryoutForm .question-block.active {
     display: block; /* Show active question */
+    opacity: 1; /* Fully visible */
 }
 
-#tryoutForm .question-block p.question-text {
+#tryoutForm .question-block p { /* Simplified selector for question text */
     font-size: 1rem;
     margin-bottom: 15px;
     color: var(--dark-color);
@@ -192,7 +202,7 @@ header nav ul li a:hover::after {
 
 #tryoutForm .question-block .options label {
     display: block;
-    background-color: var(--white-color); /* Changed to white for better contrast */
+    background-color: var(--white-color);
     padding: 12px 15px;
     margin-bottom: 10px;
     border-radius: 10px;
@@ -211,7 +221,7 @@ header nav ul li a:hover::after {
     transform: scale(1.2);
 }
 
-/* Navigation Buttons (using .btn-primary and .btn-secondary classes) */
+/* Navigation Buttons */
 .navigation-buttons {
     margin-top: 30px;
     display: flex;
@@ -220,9 +230,8 @@ header nav ul li a:hover::after {
 }
 
 .navigation-buttons button {
-    /* Base styles already provided by .btn-primary/.btn-secondary */
-    padding: 12px 25px; /* Adjust padding for a bit larger buttons */
-    border-radius: 38px; /* Slightly less rounded than 38px for form context */
+    padding: 12px 25px;
+    border-radius: 38px;
     font-size: 1rem;
 }
 
@@ -245,7 +254,7 @@ header nav ul li a:hover::after {
 #result {
     margin-top: 40px;
     padding: 30px;
-    background-color: #e6f7ff; /* Light blue background for results */
+    background-color: #e6f7ff;
     border-radius: 38px;
     border: 2px solid var(--primary-color);
     color: var(--dark-color);
@@ -262,7 +271,7 @@ header nav ul li a:hover::after {
     margin-bottom: 10px;
 }
 
-/* Footer (from your provided CSS) */
+/* Footer */
 footer {
     background: var(--dark-color);
     color: var(--white-color);
@@ -286,7 +295,43 @@ footer .social-links a:hover {
     color: var(--primary-color);
 }
 
-/* Responsive Design (from your provided CSS) */
+/* Profile in Header */
+.profile-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin-left: auto;
+}
+
+.profile-nav:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+}
+
+.profile-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+}
+
+.profile-nav span {
+    color: #007bff;
+    font-weight: 600;
+    font-size: 0.95em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
     header .container {
         flex-direction: column;
@@ -318,55 +363,17 @@ footer .social-links a:hover {
         width: 100%;
         margin: 15px 0;
     }
-}
-/* --- Styling untuk Profil di Header (pojok kanan atas) --- */
-.profile-nav {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    padding: 5px 10px;
-    border-radius: 25px;
-    background-color: rgba(255, 255, 255, 0.1);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    margin-left: auto; /* Mendorong ke kanan */
-}
 
-.profile-nav:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
-}
-
-.profile-thumb {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #fff;
-}
-
-.profile-nav span {
-    color: #007bff;
-    font-weight: 600;
-    font-size: 0.95em;
-    white-space: nowrap; /* Mencegah teks nama wrap */
-    overflow: hidden;
-    text-overflow: ellipsis; /* Menambahkan elipsis jika nama terlalu panjang */
-    max-width: 100px; /* Batasi lebar nama */
-}
-
-/* Responsivitas untuk profile-nav */
-@media (max-width: 768px) {
     .profile-nav {
-        margin-left: 0; /* Biarkan navigasi utama yang mengatur */
+        margin-left: 0;
         position: absolute;
         top: 15px;
         right: 15px;
-        background-color: transparent; /* Transparan di mobile */
+        background-color: transparent;
         padding: 0;
     }
     .profile-nav span {
-        display: none; /* Sembunyikan nama di mobile, hanya tampilkan foto */
+        display: none;
     }
     .profile-thumb {
         width: 35px;
