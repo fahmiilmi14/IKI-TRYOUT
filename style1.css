@@ -1,4 +1,4 @@
-/* General Styling */
+
 :root {
     --primary-color: #007bff; /* Biru terang, menggantikan hijau awal */
     --secondary-color: #FFC107; /* Amber */
@@ -145,6 +145,9 @@ header nav ul li a:hover::after {
 }
 
 /* --- Specific Tryout Page Styling --- */
+.question-block p {
+  text-align: justify;
+}
 
 .tryout-container {
     padding: 80px 20px;
