@@ -82,7 +82,7 @@ async function initTryout() {
     const savedQuestionIndex = localStorage.getItem(`currentQuestionIndex_${currentSubtestId}`);
     if (savedQuestionIndex !== null) {
         currentQuestionIndex = parseInt(savedQuestionIndex, 10);
-        console.log("Melanjutkan dari soal indeks:", currentQuestionIndex);
+        
     } else {
         currentQuestionIndex = 0; 
     }
@@ -93,13 +93,13 @@ async function initTryout() {
         return;
     }
     questions = data;
-    console.log("questions array setelah inisialisasi:", questions);
+    
     
     const savedAnswers = localStorage.getItem(`answers_${currentSubtestId}`);
     if (savedAnswers) {
         try {
             userAnswers = JSON.parse(savedAnswers);
-            console.log("Jawaban sebelumnya dimuat:", userAnswers);
+           
         } catch (parseError) {
             console.error("Gagal parse jawaban tersimpan:", parseError);
             userAnswers = {};
