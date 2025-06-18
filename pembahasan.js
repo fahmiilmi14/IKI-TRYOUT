@@ -1,168 +1,171 @@
+document.addEventListener("DOMContentLoaded", () => {
+    const pembahasanContainer = document.getElementById("pembahasanContainer");
+    const scoreInfo = document.getElementById("scoreInfo");
+    const prevSubtestBtn = document.getElementById("prevSubtestBtn");
+    const nextSubtestBtn = document.getElementById("nextSubtestBtn");
+    const currentSubtestNameDisplay = document.getElementById("currentSubtestName");
 
-document.addEventListener('DOMContentLoaded', () => {
-    const pembahasanContent = document.getElementById('pembahasanContent');
-    const pembahasanAiBtn = document.getElementById('pembahasanAiBtn');
-    const prevPembahasanBtn = document.getElementById('prevPembahasanBtn');
-    const nextPembahasanBtn = document.getElementById('nextPembahasanBtn');
+    
+    
+    const allSubtests = [
+        { id: "pu", name: "Penalaran Umum" },
+        { id: "pbm", name: "Pengetahuan dan Pemahaman Membaca" },
+        { id: "pk", name: "Pengetahuan Kuantitatif" },
+        { id: "ppu", name: "Pengetahuan dan Pemahaman Umum" },
+        { id: "bin", name: "Literasi Bahasa Indonesia" },
+        { id: "bing", name: "Literasi Bahasa Inggris" },
+        { id: "Penalaran matematika", name: "Penalaran Matematika"},
+        
+    ];
 
-    let allQuestionsForDisplay = [];
-    let currentQuestionDisplayIndex = 0;
+    let completedSubtestsData = []; 
+    let currentSubtestIndex = 0; 
 
-    function getAllTryoutProgress() {
-        try {
-            const data = JSON.parse(localStorage.getItem('snbtTryoutProgress')) || {};
-            return data;
-        } catch (e) {
-            console.error("âŒ Gagal membaca snbtTryoutProgress dari localStorage:", e);
-            return {};
+    
+    function displayCurrentSubtestPembahasan() {
+        pembahasanContainer.innerHTML = ""; 
+
+        if (completedSubtestsData.length === 0) {
+            pembahasanContainer.innerHTML = "<p>Tidak ada subtes yang diselesaikan. Silakan selesaikan tryout terlebih dahulu.</p>";
+            prevSubtestBtn.disabled = true;
+            nextSubtestBtn.disabled = true;
+            currentSubtestNameDisplay.textContent = "";
+            return;
         }
-    }
 
-    function getSubtestNameById(id) {
-        const SUBTESTS = [
-            { id: 'pu', name: 'Penalaran Umum' },
-            { id: 'pk', name: 'Pengetahuan Kuantitatif' },
-            { id: 'pbm', name: 'Pengetahuan & Pemahaman Membaca' },
-            { id: 'ppu', name: 'Penalaran & Pengetahuan Umum' },
-            { id: 'bing', name: 'Bahasa Inggris' },
-            { id: 'bi', name: 'Bahasa Indonesia' },
-            { id: 'pm', name: 'Penalaran Matematika' }
-        ];
-        const subtest = SUBTESTS.find(s => s.id === id);
-        return subtest ? subtest.name : id;
-    }
+        const currentSubtestEntry = completedSubtestsData[currentSubtestIndex];
+        const currentSubtestId = currentSubtestEntry.id;
+        const currentSubtestDetails = currentSubtestEntry.details;
+        const subtestName = currentSubtestEntry.name; 
 
-    function getQuestionNumberInSubtest(subtestId, questionId) {
-        let count = 0;
-        let found = false;
-        for (const item of allQuestionsForDisplay) {
-            if (item.type === 'subtest_header' && item.subtestId === subtestId) {
-                found = true;
-                count = 0;
-                continue;
-            }
-            if (found && item.type === 'question' && item.subtestId === subtestId) {
-                count++;
-                if (item.questionId === questionId) return count;
-            }
-            if (item.type === 'subtest_header' && item.subtestId !== subtestId && found) {
-                found = false;
-            }
+        currentSubtestNameDisplay.textContent = subtestName;
+
+        
+        if (!currentSubtestDetails || !currentSubtestDetails.answerDetails || currentSubtestDetails.answerDetails.length === 0) {
+             pembahasanContainer.innerHTML = `<p>Data pembahasan untuk subtes "${subtestName}" tidak ditemukan atau kosong.</p>`;
+             
+             prevSubtestBtn.disabled = currentSubtestIndex === 0;
+             nextSubtestBtn.disabled = currentSubtestIndex === completedSubtestsData.length - 1;
+             return;
         }
-        return 'N/A';
+        
+
+
+        currentSubtestDetails.answerDetails.forEach((detail, questionIndex) => {
+            const questionPembahasan = document.createElement("div");
+            questionPembahasan.className = "question-pembahasan";
+
+            const questionText = document.createElement("p");
+            questionText.className = "question-text";
+            questionText.innerHTML = `<strong>Soal ${questionIndex + 1}:</strong> ${detail.questionText.replace(/\n/g, "<br>")}`;
+            questionPembahasan.appendChild(questionText);
+
+            const optionsDiv = document.createElement("div");
+            optionsDiv.className = "options";
+            detail.options.forEach(option => {
+                const label = document.createElement("label");
+                label.textContent = option;
+                optionsDiv.appendChild(label);
+            });
+            questionPembahasan.appendChild(optionsDiv);
+
+            const userAnswerP = document.createElement("p");
+            userAnswerP.className = "user-answer";
+            if (detail.isCorrect) {
+                userAnswerP.classList.add("correct");
+                userAnswerP.innerHTML = `Jawaban Anda: <strong>${detail.userAnswer}</strong> <i class="fas fa-check-circle"></i>`;
+            } else {
+                userAnswerP.classList.add("incorrect");
+                userAnswerP.innerHTML = `Jawaban Anda: <strong>${detail.userAnswer}</strong> <i class="fas fa-times-circle"></i>`;
+            }
+            questionPembahasan.appendChild(userAnswerP);
+
+            const correctAnswerP = document.createElement("p");
+            correctAnswerP.className = "correct-answer";
+            correctAnswerP.innerHTML = `Jawaban Benar: <strong>${detail.correctAnswer}</strong>`;
+            questionPembahasan.appendChild(correctAnswerP);
+
+            
+            const whatsappBtn = document.createElement("a");
+            whatsappBtn.className = "whatsapp-button";
+            whatsappBtn.textContent = "Pembahasan AI WhatsApp";
+            whatsappBtn.target = "_blank";
+
+            let whatsappMessage = `Halo iki aku jelasin soal ${questionIndex + 1} (${subtestName}) dong:\n\n`;
+            whatsappMessage += `${detail.questionText.replace(/\n/g, " ")}\n\n`;
+            whatsappMessage += `Opsi Jawaban:\n`;
+            detail.options.forEach((opt, optIndex) => {
+                whatsappMessage += `${String.fromCharCode(65 + optIndex)}. ${opt}\n`;
+            });
+            whatsappMessage += `\nJawaban saya: ${detail.userAnswer}\n`;
+            whatsappMessage += `Jawaban benar: ${detail.correctAnswer}\n`;
+            whatsappMessage += `Apakah jawaban saya (${detail.userAnswer}) sudah benar? Kalau salah kenapa salah? Kalau benar kenapa benar?`;
+
+            whatsappBtn.href = `https://wa.me/6285732361586?text=${encodeURIComponent(whatsappMessage)}`;
+            questionPembahasan.appendChild(whatsappBtn);
+            
+
+            pembahasanContainer.appendChild(questionPembahasan);
+        });
+
+        
+        prevSubtestBtn.disabled = currentSubtestIndex === 0;
+        nextSubtestBtn.disabled = currentSubtestIndex === completedSubtestsData.length - 1;
     }
 
-    function renderPembahasanInitial() {
-        const allTryoutData = getAllTryoutProgress();
-        pembahasanContent.innerHTML = '';
-        allQuestionsForDisplay = [];
+    
+    const snbtTryoutProgress = JSON.parse(localStorage.getItem('snbtTryoutProgress'));
 
-        const SUBTEST_ORDER = ['pu', 'pk', 'pbm', 'ppu', 'bing', 'bi', 'pm'];
-
-        SUBTEST_ORDER.forEach(subtestId => {
-            const subtestData = allTryoutData[subtestId];
-            if (subtestData?.completed && Array.isArray(subtestData.answerDetails)) {
-                const subtestTitle = getSubtestNameById(subtestId);
-                allQuestionsForDisplay.push({
-                    type: 'subtest_header',
-                    subtestId,
-                    subtestName: subtestTitle,
-                    score: subtestData.score
-                });
-                subtestData.answerDetails.forEach(detail => {
-                    allQuestionsForDisplay.push({
-                        type: 'question',
-                        subtestId,
-                        subtestName: subtestTitle,
-                        ...detail
-                    });
+    if (snbtTryoutProgress) {
+        
+        allSubtests.forEach(subtest => {
+            if (snbtTryoutProgress[subtest.id] && snbtTryoutProgress[subtest.id].completed) {
+                completedSubtestsData.push({
+                    id: subtest.id,
+                    name: subtest.name,
+                    details: snbtTryoutProgress[subtest.id] 
                 });
             }
         });
 
-        localStorage.setItem('fullQuestionsDataForAI', JSON.stringify(allQuestionsForDisplay.filter(q => q.type === 'question')));
-        currentQuestionDisplayIndex = 0;
-        displayCurrentQuestion();
+        
+        console.log("Completed Subtests Data:", completedSubtestsData);
+
+        
+        let totalScore = 0;
+        if (completedSubtestsData.length > 0) {
+            completedSubtestsData.forEach(subtest => {
+                totalScore += subtest.details.score;
+            });
+            const averageScore = totalScore / completedSubtestsData.length;
+            scoreInfo.innerHTML = `Skor Rata-rata Anda: <strong>${averageScore.toFixed(0)}</strong>`;
+        } else {
+            scoreInfo.innerHTML = "Belum ada subtes yang diselesaikan.";
+        }
+
+        
+        displayCurrentSubtestPembahasan();
+    } else {
+        pembahasanContainer.innerHTML = "<p>Tidak ada data tryout yang ditemukan. Silakan selesaikan tryout terlebih dahulu.</p>";
+        prevSubtestBtn.disabled = true;
+        nextSubtestBtn.disabled = true;
+        currentSubtestNameDisplay.textContent = "";
     }
 
-    function displayCurrentQuestion() {
-        pembahasanContent.innerHTML = '';
-
-        if (allQuestionsForDisplay.length === 0) {
-            pembahasanContent.innerHTML = "<p>Tidak ada data pembahasan soal yang tersedia.</p>";
-            prevPembahasanBtn.style.display = "none";
-            nextPembahasanBtn.style.display = "none";
-            return;
-        }
-
-        const currentItem = allQuestionsForDisplay[currentQuestionDisplayIndex];
-        if (!currentItem) {
-            pembahasanContent.innerHTML = "<p>Terjadi kesalahan saat memuat soal.</p>";
-            return;
-        }
-
-        if (currentItem.type === 'subtest_header') {
-            pembahasanContent.innerHTML = `
-                <div class="question-pembahasan active">
-                    <h3>Subtes: ${currentItem.subtestName} (Skor: ${currentItem.score})</h3>
-                    <p>Silakan klik "Selanjutnya" untuk melihat pembahasan soal.</p>
-                </div>
-            `;
-        } else if (currentItem.type === 'question') {
-            const optionsHTML = currentItem.options.map(opt => {
-                const isUser = opt[0] === currentItem.userAnswer;
-                const isCorrect = opt[0] === currentItem.correctAnswer;
-                const isWrong = isUser && !currentItem.isCorrect;
-                return `<label class="${isUser ? 'user-answer' : ''} ${isCorrect ? 'correct-answer' : ''} ${isWrong ? 'incorrect-answer' : ''}">${opt}</label>`;
-            }).join('');
-
-            pembahasanContent.innerHTML = `
-                <div class="question-pembahasan active">
-                    <h4>Soal No. ${getQuestionNumberInSubtest(currentItem.subtestId, currentItem.questionId)}</h4>
-                    <p>${currentItem.questionText.replace(/\n/g, "<br>")}</p>
-                    <div class="options-pembahasan">${optionsHTML}</div>
-                    <p>Jawaban Anda: <span style="color: ${currentItem.isCorrect ? 'green' : 'red'}; font-weight: bold;">${currentItem.isCorrect ? 'Benar' : 'Salah'}</span></p>
-                    <p>Kunci Jawaban: <strong>${currentItem.correctAnswer}</strong></p>
-                </div>
-            `;
-        }
-
-        prevPembahasanBtn.disabled = currentQuestionDisplayIndex === 0;
-        nextPembahasanBtn.disabled = currentQuestionDisplayIndex === allQuestionsForDisplay.length - 1;
-    }
-
-    prevPembahasanBtn?.addEventListener('click', () => {
-        if (currentQuestionDisplayIndex > 0) {
-            currentQuestionDisplayIndex--;
-            displayCurrentQuestion();
+    
+    prevSubtestBtn.addEventListener("click", () => {
+        if (currentSubtestIndex > 0) {
+            currentSubtestIndex--;
+            displayCurrentSubtestPembahasan();
+            window.scrollTo(0, 0); 
         }
     });
 
-    nextPembahasanBtn?.addEventListener('click', () => {
-        if (currentQuestionDisplayIndex < allQuestionsForDisplay.length - 1) {
-            currentQuestionDisplayIndex++;
-            displayCurrentQuestion();
+    nextSubtestBtn.addEventListener("click", () => {
+        if (currentSubtestIndex < completedSubtestsData.length - 1) {
+            currentSubtestIndex++;
+            displayCurrentSubtestPembahasan();
+            window.scrollTo(0, 0); 
         }
     });
-
-    pembahasanAiBtn?.addEventListener('click', () => {
-        const userName = localStorage.getItem('snbtUserName') || 'Pengguna';
-        const fullQuestionsData = JSON.parse(localStorage.getItem('fullQuestionsDataForAI')) || [];
-        let message = `Halo iki aku ${userName}, tolong jelasin pembahasan tryout ini dong:\n\n`;
-
-        fullQuestionsData.forEach((q) => {
-            message += `--- Subtes: ${q.subtestName} ---\n`;
-            message += `Soal No. ${getQuestionNumberInSubtest(q.subtestId, q.questionId)}\n`;
-            message += `Pertanyaan: ${q.questionText}\n`;
-            message += `Opsi: ${q.options.join(', ')}\n`;
-            message += `Jawaban Anda: ${q.userAnswer}\n`;
-            message += `Kunci Jawaban: ${q.correctAnswer}\n`;
-            message += `Status: ${q.isCorrect ? 'Benar' : 'Salah'}\n\n`;
-        });
-
-        const encoded = encodeURIComponent(message);
-        window.open(`https://wa.me/6285732361586?text=${encoded}`, '_blank');
-    });
-
-    renderPembahasanInitial();
 });
