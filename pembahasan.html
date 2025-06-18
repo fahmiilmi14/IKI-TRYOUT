@@ -3,126 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pembahasan Tryout - IKI TRYOUT</title>
-    <link rel="stylesheet" href="style1.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Pembahasan Tryout</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
-        .pembahasan-section {
-            padding: 80px 20px;
-            max-width: 900px;
-            margin: auto;
-            background-color: var(--white-color);
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            margin-top: 30px;
-            margin-bottom: 50px;
-        }
-
-        .pembahasan-section h2 {
-            text-align: center;
-            margin-bottom: 40px;
-            color: var(--dark-color);
-        }
-
-        .question-pembahasan {
-            margin-bottom: 30px;
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
             padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 15px;
-            background-color: var(--gray-light);
+            color: #333;
         }
-
-        .question-pembahasan h4 {
-            margin-bottom: 15px;
-            color: var(--primary-color);
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
-
-        .question-pembahasan p {
-            margin-bottom: 10px;
-            line-height: 1.8;
-        }
-
-        .question-pembahasan .options-pembahasan label {
-            display: block;
-            padding: 8px 0;
-            font-weight: 500;
-        }
-
-        .question-pembahasan .options-pembahasan label.user-answer {
-            color: var(--primary-color);
-            font-weight: bold;
-        }
-
-        .question-pembahasan .options-pembahasan label.correct-answer {
-            color: green;
-            font-weight: bold;
-        }
-
-        .question-pembahasan .options-pembahasan label.incorrect-answer {
-            color: red;
-            font-weight: bold;
-        }
-
-        .pembahasan-buttons {
+        h1 {
+            color: #4CAF50;
             text-align: center;
-            margin-top: 40px;
+            margin-bottom: 30px;
         }
-
-        .pembahasan-buttons .btn-primary {
-            margin: 0 10px;
+        .score-info {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #e2e3e5;
+            border-radius: 8px;
         }
-        #pembahasanContent {
-    text-align: justify;
-}
+        .subtest-navigation {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .subtest-navigation button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 5px;
+            transition: background-color 0.3s ease;
+        }
+        .subtest-navigation button:hover {
+            background-color: #0056b3;
+        }
+        .subtest-navigation button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #currentSubtestName {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #555;
+            margin: 0 15px;
+        }
+        .question-pembahasan {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .question-pembahasan p.question-text {
+            font-weight: bold;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        .question-pembahasan .options label {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+        .question-pembahasan .user-answer,
+        .question-pembahasan .correct-answer {
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .question-pembahasan .user-answer.correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .question-pembahasan .user-answer.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .question-pembahasan .correct-answer {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+        .whatsapp-button {
+            display: block;
+            background-color: #25D366;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+            text-decoration: none;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+        }
+        .whatsapp-button:hover {
+            background-color: #1DA851;
+        }
+        .button-group {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .button-group button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .button-group button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1 class="logo">IKI TRYOUT</h1>
-            <nav>
-                <ul>
-                    <li><a href="index.html#home">Beranda</a></li>
-                    <li><a href="coba.html#about">Tentang Kami</a></li>
-                    <li><a href="coba.html#tryout">Pilih Paket</a></li>
-                    <li><a href="coba.html#faq">FAQ</a></li>
-                    <li><a href="coba.html#contact">Kontak</a></li>
-                </ul>
-            </nav>
-            <div class="profile-nav" id="profileNav">
-                <img src="https://via.placeholder.com/40" alt="Profil" class="profile-thumb" id="headerProfilePic">
-                <span id="headerUserName">Profil</span>
+    <div class="container">
+        <h1>Pembahasan Tryout</h1>
+        <div class="score-info" id="scoreInfo"></div>
+<span id="currentSubtestName"></span>
+        
+
+        <div id="pembahasanContainer">
             </div>
+        
+            <div class="subtest-navigation">
+            <button id="prevSubtestBtn"><</button><button id="nextSubtestBtn">></button>
         </div>
-    </header>
-
-    <main>
-        <section class="pembahasan-section">
-            <h2>Pembahasan Tryout</h2>
-            <div style="text-align: center; margin-bottom: 20px;"></div>
-            <div id="pembahasanContent"></div>
-            <div class="pembahasan-buttons">
-                <button id="prevPembahasanBtn" class="btn-primary">Kembali</button>
-                <button id="nextPembahasanBtn" class="btn-primary">Selanjutnya</button>
-                <p></p>
-                <button id="pembahasanAiBtn" class="btn-primary">Pembahasan dengan AI (WhatsApp)</button>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 IKI TRYOUT. All rights reserved.</p>
-            <div class="social-links">
-                <a href="#" target="_blank">Facebook</a>
-                <a href="#" target="_blank">Instagram</a>
-            </div>
+        <div class="button-group">
+            <button onclick="window.location.href='coba.html'">Kembali ke Menu Tryout</button>
         </div>
-    </footer>
+    </div>
 
-    <!-- ✅ Hanya panggil JS yang memang dibutuhkan -->
     <script src="pembahasan.js"></script>
 </body>
 </html>
