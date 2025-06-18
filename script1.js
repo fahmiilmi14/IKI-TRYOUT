@@ -1,8 +1,8 @@
-let KUNCI_RAHASIA = ""; 
+let KUNCI_RAHASIA = "";
 let questions = [];
 let currentQuestionIndex = 0;
 let userAnswers = {};
-let timeLeft = 30 * 60; 
+let timeLeft = 30 * 60;
 let timerInterval;
 
 const currentSubtestId = localStorage.getItem("currentSubtestId") || "pu";
@@ -14,95 +14,165 @@ const timerDisplay = document.getElementById("timer");
 const resultDiv = document.getElementById("result");
 const keyModal = document.getElementById("keyModal");
 
+
 async function loadEncryptedQuestions() {
     try {
         const response = await fetch("soal.enc.json");
-        if (!response.ok) throw new Error(`Gagal memuat soal.enc.json: ${response.status} ${response.statusText}`);
+
+        if (!response.ok) {
+            throw new Error(`Gagal memuat soal.enc.json: ${response.status} ${response.statusText}`);
+        }
+
         const { data } = await response.json();
-        if (!KUNCI_RAHASIA) throw new Error("Kunci rahasia belum diatur.");
+
+        if (!KUNCI_RAHASIA) {
+            throw new Error("Kunci rahasia belum diatur.");
+        }
+
         const bytes = CryptoJS.AES.decrypt(data, KUNCI_RAHASIA);
         const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-        if (!decrypted) throw new Error("Hasil dekripsi kosong, kemungkinan kunci salah atau data rusak.");
-        let parsed = JSON.parse(decrypted);
+
+        if (!decrypted) {
+            localStorage.removeItem("tryoutAccessKey");
+            throw new Error("Hasil dekripsi kosong, kemungkinan kunci salah atau data rusak.");
+        }
+
+        let parsed;
+        try {
+            parsed = JSON.parse(decrypted);
+        } catch (parseError) {
+            localStorage.removeItem("tryoutAccessKey");
+            throw new Error("Gagal parsing hasil dekripsi menjadi JSON. Data dekripsi mungkin rusak atau kunci salah.");
+        }
+
         const filteredQuestions = parsed.filter(q => q.category === currentSubtestId);
+
         if (filteredQuestions.length === 0) {
-            alert("Tidak ada soal tersedia untuk kategori ini.");
-            keyModal.style.display = "flex"; 
+            alert("Tidak ada soal tersedia untuk kategori ini. Pastikan kunci benar dan soal memiliki kategori yang sesuai.");
+            localStorage.removeItem("tryoutAccessKey");
+            keyModal.style.display = "flex";
             return [];
         }
+
         return filteredQuestions;
     } catch (e) {
-        alert("âŒ Gagal memuat soal: " + e.message);
-        console.error("Kesalahan dekripsi atau pemrosesan:", e);
-        keyModal.style.display = "flex"; 
+        alert("❌ Gagal memuat soal. Kunci salah, file rusak, atau masalah jaringan: " + e.message);
+        console.error("Kesalahan dekripsi atau pemprosesan:", e);
+        localStorage.removeItem("tryoutAccessKey");
+        keyModal.style.display = "flex";
         return [];
     }
 }
 
 function submitKunci() {
     const input = document.getElementById("kunciInput").value.trim();
-    if (!input) return alert("Kunci tidak boleh kosong!");
+    if (!input) {
+        alert("Kunci tidak boleh kosong!");
+        return;
+    }
     KUNCI_RAHASIA = input;
-    localStorage.setItem("tryoutAccessKey", KUNCI_RAHASIA); 
+    localStorage.setItem("tryoutAccessKey", KUNCI_RAHASIA);
+
     keyModal.style.display = "none";
     initTryout();
 }
 
 async function initTryout() {
-    const savedIndex = localStorage.getItem(`currentQuestionIndex_${currentSubtestId}`);
-    currentQuestionIndex = savedIndex !== null ? parseInt(savedIndex, 10) : 0;
+    const savedQuestionIndex = localStorage.getItem(`currentQuestionIndex_${currentSubtestId}`);
+    if (savedQuestionIndex !== null) {
+        currentQuestionIndex = parseInt(savedQuestionIndex, 10);
+
+    } else {
+        currentQuestionIndex = 0;
+    }
+
     const data = await loadEncryptedQuestions();
-    if (!data.length) return;
+    if (!data.length) {
+        console.warn("Inisialisasi Tryout: Tidak ada data soal yang dimuat.");
+        return;
+    }
     questions = data;
+
+
     const savedAnswers = localStorage.getItem(`answers_${currentSubtestId}`);
-    userAnswers = savedAnswers ? JSON.parse(savedAnswers) : {};
+    if (savedAnswers) {
+        try {
+            userAnswers = JSON.parse(savedAnswers);
+
+        } catch (parseError) {
+            console.error("Gagal parse jawaban tersimpan:", parseError);
+            userAnswers = {};
+        }
+    }
+
     displayQuestion();
     startTimer();
 }
 
 function displayQuestion() {
     tryoutForm.innerHTML = "";
+
     const q = questions[currentQuestionIndex];
-    if (!q) return;
-    const soalIdUnik = `${currentSubtestId}-${currentQuestionIndex + 1}`;
+    if (!q) {
+        console.warn("displayQuestion: Pertanyaan tidak ditemukan pada indeks:", currentQuestionIndex);
+        return;
+    }
+
     const block = document.createElement("div");
     block.className = "question-block active";
+
     const text = document.createElement("p");
     text.innerHTML = q.question.replace(/\n/g, "<br>");
     block.appendChild(text);
+
     const options = document.createElement("div");
     options.className = "options";
-    q.options.forEach((opt) => {
+    q.options.forEach((opt, index) => {
         const label = document.createElement("label");
         const input = document.createElement("input");
         input.type = "radio";
-        input.name = `question${soalIdUnik}`;
+        input.name = `question${q.id}`;
         input.value = opt.charAt(0);
-        if (userAnswers[soalIdUnik] === opt.charAt(0)) input.checked = true;
+
+        if (userAnswers[q.id] === opt.charAt(0)) {
+            input.checked = true;
+        }
+
         input.onchange = (e) => {
-            userAnswers[soalIdUnik] = e.target.value;
+            userAnswers[q.id] = e.target.value;
             localStorage.setItem(`answers_${currentSubtestId}`, JSON.stringify(userAnswers));
             localStorage.setItem(`currentQuestionIndex_${currentSubtestId}`, currentQuestionIndex);
         };
+
         label.appendChild(input);
         label.appendChild(document.createTextNode(opt));
         options.appendChild(label);
     });
+
     block.appendChild(options);
     tryoutForm.appendChild(block);
+
     prevBtn.style.display = currentQuestionIndex === 0 ? "none" : "inline-block";
     nextBtn.style.display = currentQuestionIndex === questions.length - 1 ? "none" : "inline-block";
     submitBtn.style.display = currentQuestionIndex === questions.length - 1 ? "inline-block" : "none";
 }
 
 function startTimer() {
-    timeLeft = parseInt(localStorage.getItem(`timer_${currentSubtestId}`)) || 30 * 60;
+    const savedTime = localStorage.getItem(`timer_${currentSubtestId}`);
+    if (savedTime) {
+        timeLeft = parseInt(savedTime, 10);
+    } else {
+        timeLeft = 30 * 60;
+    }
+
     timerDisplay.style.display = "block";
+
     timerInterval = setInterval(() => {
         const min = Math.floor(timeLeft / 60);
         const sec = timeLeft % 60;
         timerDisplay.textContent = `Waktu tersisa: ${min}:${sec < 10 ? "0" : ""}${sec}`;
         localStorage.setItem(`timer_${currentSubtestId}`, timeLeft);
+
         if (--timeLeft < 0) {
             clearInterval(timerInterval);
             submitTryout();
@@ -115,13 +185,14 @@ function estimateTheta(userResponses, questions) {
     for (let i = 0; i < 50; i++) {
         let grad = 0;
         for (let q of questions) {
-            const soalIdUnik = `${currentSubtestId}-${questions.indexOf(q) + 1}`;
-            const ua = userResponses[soalIdUnik];
+            const ua = userResponses[q.id];
             if (q.correctAnswer === undefined || ua === undefined) continue;
+
             const correct = ua === q.correctAnswer;
-            const guessing = q.guessing ?? 0.25;
-            const discrimination = q.discrimination ?? 1.0;
-            const difficulty = q.difficulty ?? 0;
+            const guessing = q.guessing !== undefined ? q.guessing : 0.25;
+            const discrimination = q.discrimination !== undefined ? q.discrimination : 1.0;
+            const difficulty = q.difficulty !== undefined ? q.difficulty : 0;
+
             const P = guessing + (1 - guessing) / (1 + Math.exp(-discrimination * (theta - difficulty)));
             grad += discrimination * (correct ? (1 - P) : (P - 1));
         }
@@ -135,29 +206,34 @@ function scaleTheta(theta, minT = -3, maxT = 3, minS = 300, maxS = 1000) {
     return Math.round(((t - minT) / (maxT - minT)) * (maxS - minS) + minS);
 }
 
+
 function submitTryout() {
     clearInterval(timerInterval);
+
     localStorage.removeItem(`timer_${currentSubtestId}`);
     localStorage.removeItem(`answers_${currentSubtestId}`);
     localStorage.removeItem(`currentQuestionIndex_${currentSubtestId}`);
-    localStorage.removeItem("tryoutAccessKey");
+    
 
     let benar = 0;
     const answerDetails = [];
 
-    for (let i = 0; i < questions.length; i++) {
-        const q = questions[i];
-        const soalIdUnik = `${currentSubtestId}-${i + 1}`;
-        const userAnswer = userAnswers[soalIdUnik] || "Tidak Dijawab";
+    for (const q of questions) {
+        const userAnswer = userAnswers[q.id] || "Tidak Dijawab";
         const isCorrect = userAnswer === q.correctAnswer;
-        if (isCorrect) benar++;
+
+        if (isCorrect) {
+            benar++;
+        }
+
         answerDetails.push({
-            questionId: soalIdUnik,
+            questionId: q.id,
             questionText: q.question,
             options: q.options,
             userAnswer: userAnswer,
             correctAnswer: q.correctAnswer,
-            isCorrect: isCorrect
+            isCorrect: isCorrect,
+            subtestId: currentSubtestId 
         });
     }
 
@@ -172,11 +248,10 @@ function submitTryout() {
 
     resultDiv.style.display = "block";
     resultDiv.innerHTML = `
-        <h3>Hasil Tryout</h3>
+        <h3>Hasil Subtes Anda</h3>
         <p>Benar: ${benar} dari ${questions.length}</p>
-        <p>Theta: <strong>${theta.toFixed(2)}</strong></p>
-        <p>Skor: <strong>${score}</strong> dari 1000</p>
-        <p>Redirect ke beranda dalam 3 detik...</p>
+        <p>Skor Subtes: <strong>${score}</strong></p>
+        <p>Anda akan dialihkan ke halaman utama tryout dalam 3 detik...</p>
     `;
 
     let snbtTryoutProgress = JSON.parse(localStorage.getItem('snbtTryoutProgress')) || {};
@@ -192,30 +267,44 @@ function submitTryout() {
     }, 3000);
 }
 
+
+
 nextBtn.onclick = () => {
     const currentBlock = tryoutForm.querySelector('.question-block.active');
-    if (currentBlock) currentBlock.classList.remove('active');
+    if (currentBlock) {
+        currentBlock.classList.remove('active');
+    }
+
     if (currentQuestionIndex < questions.length - 1) {
         currentQuestionIndex++;
+
         localStorage.setItem(`currentQuestionIndex_${currentSubtestId}`, currentQuestionIndex);
+
         displayQuestion();
     }
 };
 
 prevBtn.onclick = () => {
     const currentBlock = tryoutForm.querySelector('.question-block.active');
-    if (currentBlock) currentBlock.classList.remove('active');
+    if (currentBlock) {
+        currentBlock.classList.remove('active');
+    }
+
     if (currentQuestionIndex > 0) {
         currentQuestionIndex--;
+
         localStorage.setItem(`currentQuestionIndex_${currentSubtestId}`, currentQuestionIndex);
+
         displayQuestion();
     }
 };
 
 submitBtn.onclick = submitTryout;
 
+
 window.addEventListener("DOMContentLoaded", () => {
     const savedAccessKey = localStorage.getItem("tryoutAccessKey");
+
     if (savedAccessKey) {
         KUNCI_RAHASIA = savedAccessKey;
         keyModal.style.display = "none";
@@ -226,14 +315,22 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const headerProfilePic = document.getElementById("headerProfilePic");
     const headerUserName = document.getElementById("headerUserName");
+
     const userName = localStorage.getItem("snbtUserName") || "Profil";
     const userProfilePic = localStorage.getItem("snbtProfilePicture") || "https://via.placeholder.com/40";
-    if (headerUserName) headerUserName.textContent = userName;
-    if (headerProfilePic) headerProfilePic.src = userProfilePic;
 
+    if (headerUserName) {
+        headerUserName.textContent = userName;
+    }
+    if (headerProfilePic) {
+        headerProfilePic.src = userProfilePic;
+    }
     const requestKeyBtn = document.querySelector('a[href="https://wa.me/6285732361586"]');
     if (requestKeyBtn) {
-        const message = `Halo saya ${userName}, ingin meminta kunci soal`;
-        requestKeyBtn.href = `https://wa.me/6285732361586?text=${encodeURIComponent(message)}`;
+        const actualUserName = localStorage.getItem("snbtUserName") || "Pengguna";
+        const message = `Halo saya ${actualUserName}, ingin meminta kunci soal`;
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://wa.me/6285732361586?text=${encodedMessage}`;
+        requestKeyBtn.href = whatsappUrl;
     }
 });
