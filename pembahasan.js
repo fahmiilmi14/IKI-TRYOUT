@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', () => {
     const pembahasanContent = document.getElementById('pembahasanContent');
     const pembahasanAiBtn = document.getElementById('pembahasanAiBtn');
@@ -12,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = JSON.parse(localStorage.getItem('snbtTryoutProgress')) || {};
             return data;
         } catch (e) {
-            console.error("❌ Gagal membaca snbtTryoutProgress dari localStorage:", e);
+            console.error("âŒ Gagal membaca snbtTryoutProgress dari localStorage:", e);
             return {};
         }
     }
@@ -25,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'ppu', name: 'Penalaran & Pengetahuan Umum' },
             { id: 'bing', name: 'Bahasa Inggris' },
             { id: 'bi', name: 'Bahasa Indonesia' },
-            { id: 'Penalaran matematika', name: 'Penalaran Matematika' }
+            { id: 'pm', name: 'Penalaran Matematika' }
         ];
         const subtest = SUBTESTS.find(s => s.id === id);
         return subtest ? subtest.name : id;
@@ -56,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         pembahasanContent.innerHTML = '';
         allQuestionsForDisplay = [];
 
-        const SUBTEST_ORDER = ['pu', 'pk', 'pbm', 'ppu', 'bing', 'bi', 'Penalaran matematika'];
+        const SUBTEST_ORDER = ['pu', 'pk', 'pbm', 'ppu', 'bing', 'bi', 'pm'];
 
         SUBTEST_ORDER.forEach(subtestId => {
             const subtestData = allTryoutData[subtestId];
