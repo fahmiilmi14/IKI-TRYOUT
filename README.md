@@ -1,1 +1,3 @@
 # IKI-TRYOUT
+
+#INI PRIVAT
