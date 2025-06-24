@@ -3,6 +3,7 @@ let allAnswerDetails = [];
 let totalQuestions = 0;
 let correctAnswers = 0;
 let finalScore = 0;
+
 const urutanSubtes = [
   'pu',
   'ppu',
@@ -13,50 +14,51 @@ const urutanSubtes = [
   'Penalaran matematika'
 ];
 
-const semuaPembahasan = [];
-
-urutanSubtes.forEach(namaSubtes => {
-  const pembahasanSubtes = JSON.parse(localStorage.getItem(`pembahasan_${namaSubtes}`));
-  if (pembahasanSubtes) {
-    semuaPembahasan.push(...pembahasanSubtes);
-  }
-});
-
 const pembahasanContainer = document.getElementById("pembahasanContainer");
 const prevQuestionBtn = document.getElementById("prevQuestionBtn");
 const nextQuestionBtn = document.getElementById("nextQuestionBtn");
 const whatsappPembahasanBtn = document.getElementById("whatsappPembahasanBtn");
 
-function compareSubtestOrder(a, b) {
-  const subtestOrder = urutanSubtes;
-  const indexA = subtestOrder.indexOf(a.subtestId || a.id || "");
-  const indexB = subtestOrder.indexOf(b.subtestId || b.id || "");
 
+function compareSubtestOrder(a, b) {
+  const indexA = urutanSubtes.indexOf(a.subtestId);
+  const indexB = urutanSubtes.indexOf(b.subtestId);
+
+  
   if (indexA !== indexB) {
     return indexA - indexB;
-  } else {
-    return (a.questionNumber || 0) - (b.questionNumber || 0);
   }
+  
+  return a.questionNumber - b.questionNumber;
 }
 
 function loadAnswerDetails() {
+    allAnswerDetails = []; 
+
     
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
+        
         if (key.startsWith("Jawaban_")) {
             try {
                 const answerDetail = JSON.parse(localStorage.getItem(key));
-                if (answerDetail) {
+                
+                if (answerDetail && answerDetail.subtestId && typeof answerDetail.questionNumber === 'number') {
                     allAnswerDetails.push(answerDetail);
+                } else {
+                    console.warn(`Data jawaban tidak lengkap atau format salah untuk kunci: ${key}`, answerDetail);
                 }
             } catch (e) {
-                console.error(`Gagal parse ${key}:`, e);
+                console.error(`Gagal parse data dari localStorage untuk kunci ${key}:`, e);
             }
         }
     }
 
     
-    const summaryKeys = ["pu", "pk", "ppu", "pbm", "litbin", "litbing", "pm"];
+    totalQuestions = 0;
+    correctAnswers = 0;
+    finalScore = 0;
+    const summaryKeys = ["pu", "pk", "ppu", "pbm", "bi", "bing", "Penalaran matematika"];
     for (const sub of summaryKeys) {
         const total = localStorage.getItem(`totalQuestions_${sub}`);
         const correct = localStorage.getItem(`totalCorrect_${sub}`);
@@ -64,14 +66,14 @@ function loadAnswerDetails() {
         if (total && correct && score) {
             totalQuestions += parseInt(total);
             correctAnswers += parseInt(correct);
-            finalScore += parseInt(score);
+            finalScore += parseFloat(score); 
         }
     }
 
     
     document.getElementById("totalQuestionsSummary").textContent = totalQuestions;
     document.getElementById("correctAnswersSummary").textContent = correctAnswers;
-    document.getElementById("finalScoreDisplay").textContent = finalScore;
+    document.getElementById("finalScoreDisplay").textContent = finalScore.toFixed(2); 
 
     if (allAnswerDetails.length === 0) {
         pembahasanContainer.innerHTML = "<p>Tidak ada data pembahasan yang ditemukan. Pastikan Anda telah menyelesaikan tryout.</p>";
@@ -84,6 +86,8 @@ function loadAnswerDetails() {
     
     allAnswerDetails.sort(compareSubtestOrder);
 
+    
+    currentQuestionIndex = 0;
     displayQuestionPembahasan(currentQuestionIndex);
     updateNavigationButtons();
 }
@@ -100,9 +104,10 @@ function displayQuestionPembahasan(index) {
     const questionBlock = document.createElement("div");
     questionBlock.className = "question-block";
 
-    const subId = detail.subtestId || detail.id || "-";
+    
+    const subId = detail.subtestId ? detail.subtestId.toUpperCase() : "-";
     const questionNumber = document.createElement("p");
-    questionNumber.innerHTML = `<strong>Soal ${detail.questionNumber} (${subId.toUpperCase()})</strong>`;
+    questionNumber.innerHTML = `<strong>Soal ${detail.questionNumber} (${subId})</strong>`;
     questionBlock.appendChild(questionNumber);
 
     const questionText = document.createElement("p");
@@ -145,7 +150,9 @@ function updateNavigationButtons() {
 
 function updateWhatsappButton(detail) {
     const userName = localStorage.getItem("snbtUserName") || "Pengguna";
-    const message = `Halo Iki Aku ${userName}, jelasin Soal \n\n ${detail.questionNumber}: "${detail.questionText.replace(/<br>/g, "\n")}" \n\nOpsi: ${detail.options.join(', ')} \n\nJawaban Benar: ${detail.correctAnswer} \n\nKenapa?`;
+    
+    const subtestName = detail.subtestId ? detail.subtestId.toUpperCase() : "Subtes";
+    const message = `Halo Iki Aku ${userName}, jelasin Soal ${detail.questionNumber} (${subtestName}): "${detail.questionText.replace(/<br>/g, "\n")}" \n\nOpsi: ${detail.options.join(', ')} \n\nJawaban Benar: ${detail.correctAnswer} \n\nKenapa?`;
     const encodedMessage = encodeURIComponent(message);
     whatsappPembahasanBtn.href = `https://wa.me/6285732361586?text=${encodedMessage}`;
 }
