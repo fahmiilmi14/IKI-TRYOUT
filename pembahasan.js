@@ -27,6 +27,18 @@ const prevQuestionBtn = document.getElementById("prevQuestionBtn");
 const nextQuestionBtn = document.getElementById("nextQuestionBtn");
 const whatsappPembahasanBtn = document.getElementById("whatsappPembahasanBtn");
 
+function compareSubtestOrder(a, b) {
+  const subtestOrder = urutanSubtes;
+  const indexA = subtestOrder.indexOf(a.subtestId || a.id || "");
+  const indexB = subtestOrder.indexOf(b.subtestId || b.id || "");
+
+  if (indexA !== indexB) {
+    return indexA - indexB;
+  } else {
+    return (a.questionNumber || 0) - (b.questionNumber || 0);
+  }
+}
+
 function loadAnswerDetails() {
     
     for (let i = 0; i < localStorage.length; i++) {
@@ -70,7 +82,7 @@ function loadAnswerDetails() {
     }
 
     
-    allAnswerDetails.sort((a, b) => a.questionNumber - b.questionNumber);
+    allAnswerDetails.sort(compareSubtestOrder);
 
     displayQuestionPembahasan(currentQuestionIndex);
     updateNavigationButtons();
