@@ -1,7 +1,8 @@
 let KUNCI_RAHASIA = "";
 let questions = [];
 let currentQuestionIndex = 0;
-let userAnswers = {};
+
+let userAnswers = [];
 let timeLeft = 30 * 60;
 let timerInterval;
 
@@ -13,7 +14,15 @@ const submitBtn = document.getElementById("submitBtn");
 const timerDisplay = document.getElementById("timer");
 const resultDiv = document.getElementById("result");
 const keyModal = document.getElementById("keyModal");
-
+const durasiPerSubtest = {
+    pu: 30 * 60,
+    ppu: 15 * 60,
+    pbm: 20 * 60,
+    pk: 20 * 60,
+    bi: 42.5 * 60,
+    bing: 20 * 60,
+    "Penalaran matematika": 42.5 * 60,
+};
 
 async function loadEncryptedQuestions() {
     try {
@@ -97,15 +106,26 @@ async function initTryout() {
     const savedAnswers = localStorage.getItem(`answers_${currentSubtestId}`);
     if (savedAnswers) {
         try {
+            
             userAnswers = JSON.parse(savedAnswers);
 
         } catch (parseError) {
             console.error("Gagal parse jawaban tersimpan:", parseError);
-            userAnswers = {};
+            userAnswers = [];
         }
+    } else {
+        
+        userAnswers = new Array(questions.length).fill(null);
     }
 
     displayQuestion();
+    
+if (!localStorage.getItem(`deadline_${currentSubtestId}`)) {
+    const now = Date.now();
+    const durasi = durasiPerSubtest[currentSubtestId] || 30 * 60;
+    const deadline = now + durasi * 1000;
+    localStorage.setItem(`deadline_${currentSubtestId}`, deadline);
+}
     startTimer();
 }
 
@@ -122,7 +142,7 @@ function displayQuestion() {
     block.className = "question-block active";
 
     const text = document.createElement("p");
-    text.innerHTML = q.question.replace(/\n/g, "<br>");
+    text.innerHTML = ` ${currentQuestionIndex + 1}. ${q.question.replace(/\n/g, "<br>")}`;
     block.appendChild(text);
 
     const options = document.createElement("div");
@@ -131,15 +151,17 @@ function displayQuestion() {
         const label = document.createElement("label");
         const input = document.createElement("input");
         input.type = "radio";
-        input.name = `question${q.id}`;
+        input.name = `question${currentQuestionIndex}`; 
         input.value = opt.charAt(0);
 
-        if (userAnswers[q.id] === opt.charAt(0)) {
+        
+        if (userAnswers[currentQuestionIndex] === opt.charAt(0)) {
             input.checked = true;
         }
 
         input.onchange = (e) => {
-            userAnswers[q.id] = e.target.value;
+            
+            userAnswers[currentQuestionIndex] = e.target.value;
             localStorage.setItem(`answers_${currentSubtestId}`, JSON.stringify(userAnswers));
             localStorage.setItem(`currentQuestionIndex_${currentSubtestId}`, currentQuestionIndex);
         };
@@ -158,35 +180,39 @@ function displayQuestion() {
 }
 
 function startTimer() {
-    const savedTime = localStorage.getItem(`timer_${currentSubtestId}`);
-    if (savedTime) {
-        timeLeft = parseInt(savedTime, 10);
-    } else {
-        timeLeft = 30 * 60;
+    const deadline = parseInt(localStorage.getItem(`deadline_${currentSubtestId}`), 10);
+
+    if (!deadline) {
+        console.warn("❌ Timer gagal dimulai karena deadline tidak ditemukan.");
+        return;
     }
 
-    timerDisplay.style.display = "block";
-
     timerInterval = setInterval(() => {
-        const min = Math.floor(timeLeft / 60);
-        const sec = timeLeft % 60;
-        timerDisplay.textContent = `Waktu tersisa: ${min}:${sec < 10 ? "0" : ""}${sec}`;
-        localStorage.setItem(`timer_${currentSubtestId}`, timeLeft);
+        const now = Date.now();
+        const timeLeftMs = deadline - now;
+        timeLeft = Math.floor(timeLeftMs / 1000);
 
-        if (--timeLeft < 0) {
+        if (timeLeft <= 0) {
             clearInterval(timerInterval);
             submitTryout();
+        } else {
+            const min = Math.floor(timeLeft / 60);
+            const sec = timeLeft % 60;
+            timerDisplay.textContent = `Waktu tersisa: ${min}:${sec < 10 ? "0" : ""}${sec}`;
         }
     }, 1000);
+
+    timerDisplay.style.display = "block";
 }
 
 function estimateTheta(userResponses, questions) {
     let theta = 0;
     for (let i = 0; i < 50; i++) {
         let grad = 0;
-        for (let q of questions) {
-            const ua = userResponses[q.id];
-            if (q.correctAnswer === undefined || ua === undefined) continue;
+        for (let qIndex = 0; qIndex < questions.length; qIndex++) {
+            const q = questions[qIndex];
+            const ua = userResponses[qIndex]; 
+            if (q.correctAnswer === undefined || ua === undefined || ua === null) continue; 
 
             const correct = ua === q.correctAnswer;
             const guessing = q.guessing !== undefined ? q.guessing : 0.25;
@@ -211,15 +237,17 @@ function submitTryout() {
     clearInterval(timerInterval);
 
     localStorage.removeItem(`timer_${currentSubtestId}`);
-    localStorage.removeItem(`answers_${currentSubtestId}`);
     localStorage.removeItem(`currentQuestionIndex_${currentSubtestId}`);
-    
+    KUNCI_RAHASIA = "";
+localStorage.removeItem("tryoutAccessKey");
 
     let benar = 0;
     const answerDetails = [];
 
-    for (const q of questions) {
-        const userAnswer = userAnswers[q.id] || "Tidak Dijawab";
+    
+    for (let i = 0; i < questions.length; i++) {
+        const q = questions[i];
+        const userAnswer = userAnswers[i] || "Tidak Dijawab"; 
         const isCorrect = userAnswer === q.correctAnswer;
 
         if (isCorrect) {
@@ -227,7 +255,7 @@ function submitTryout() {
         }
 
         answerDetails.push({
-            questionId: q.id,
+            questionNumber: i + 1, 
             questionText: q.question,
             options: q.options,
             userAnswer: userAnswer,
@@ -237,8 +265,19 @@ function submitTryout() {
         });
     }
 
-    const theta = estimateTheta(userAnswers, questions);
+    const theta = estimateTheta(userAnswers, questions); 
     const score = scaleTheta(theta);
+
+    
+    answerDetails.forEach((detail, index) => {
+        localStorage.setItem(`Jawaban_${currentSubtestId}(${index + 1})`, JSON.stringify(detail));
+    });
+localStorage.removeItem(`deadline_${currentSubtestId}`);
+    
+    localStorage.setItem(`totalCorrect_${currentSubtestId}`, benar);
+    localStorage.setItem(`totalQuestions_${currentSubtestId}`, questions.length);
+    localStorage.setItem(`finalScore_${currentSubtestId}`, score);
+
 
     tryoutForm.style.display = "none";
     prevBtn.style.display = "none";
@@ -251,19 +290,19 @@ function submitTryout() {
         <h3>Hasil Subtes Anda</h3>
         <p>Benar: ${benar} dari ${questions.length}</p>
         <p>Skor Subtes: <strong>${score}</strong></p>
-        <p>Anda akan dialihkan ke halaman utama tryout dalam 3 detik...</p>
+        <p>Anda akan dialihkan ke halaman pembahasan dalam 3 detik...</p>
     `;
 
     let snbtTryoutProgress = JSON.parse(localStorage.getItem('snbtTryoutProgress')) || {};
     snbtTryoutProgress[currentSubtestId] = {
         completed: true,
         score: score,
-        answerDetails: answerDetails
+        
     };
     localStorage.setItem('snbtTryoutProgress', JSON.stringify(snbtTryoutProgress));
 
     setTimeout(() => {
-        window.location.href = `coba.html?subtestId=${currentSubtestId}&score=${score}`;
+        window.location.href = `coba.html?subtestId=${currentSubtestId}`; 
     }, 3000);
 }
 
