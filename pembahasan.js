@@ -1,171 +1,155 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const pembahasanContainer = document.getElementById("pembahasanContainer");
-    const scoreInfo = document.getElementById("scoreInfo");
-    const prevSubtestBtn = document.getElementById("prevSubtestBtn");
-    const nextSubtestBtn = document.getElementById("nextSubtestBtn");
-    const currentSubtestNameDisplay = document.getElementById("currentSubtestName");
+let currentQuestionIndex = 0;
+let allAnswerDetails = [];
+let totalQuestions = 0;
+let correctAnswers = 0;
+let finalScore = 0;
+const urutanSubtes = [
+  'pu',
+  'ppu',
+  'pbm',
+  'pk',
+  'bi',
+  'bing',
+  'Penalaran matematika'
+];
 
-    
-    
-    const allSubtests = [
-        { id: "pu", name: "Penalaran Umum" },
-        { id: "pbm", name: "Pengetahuan dan Pemahaman Membaca" },
-        { id: "pk", name: "Pengetahuan Kuantitatif" },
-        { id: "ppu", name: "Pengetahuan dan Pemahaman Umum" },
-        { id: "bin", name: "Literasi Bahasa Indonesia" },
-        { id: "bing", name: "Literasi Bahasa Inggris" },
-        { id: "Penalaran matematika", name: "Penalaran Matematika"},
-        
-    ];
+const semuaPembahasan = [];
 
-    let completedSubtestsData = []; 
-    let currentSubtestIndex = 0; 
-
-    
-    function displayCurrentSubtestPembahasan() {
-        pembahasanContainer.innerHTML = ""; 
-
-        if (completedSubtestsData.length === 0) {
-            pembahasanContainer.innerHTML = "<p>Tidak ada subtes yang diselesaikan. Silakan selesaikan tryout terlebih dahulu.</p>";
-            prevSubtestBtn.disabled = true;
-            nextSubtestBtn.disabled = true;
-            currentSubtestNameDisplay.textContent = "";
-            return;
-        }
-
-        const currentSubtestEntry = completedSubtestsData[currentSubtestIndex];
-        const currentSubtestId = currentSubtestEntry.id;
-        const currentSubtestDetails = currentSubtestEntry.details;
-        const subtestName = currentSubtestEntry.name; 
-
-        currentSubtestNameDisplay.textContent = subtestName;
-
-        
-        if (!currentSubtestDetails || !currentSubtestDetails.answerDetails || currentSubtestDetails.answerDetails.length === 0) {
-             pembahasanContainer.innerHTML = `<p>Data pembahasan untuk subtes "${subtestName}" tidak ditemukan atau kosong.</p>`;
-             
-             prevSubtestBtn.disabled = currentSubtestIndex === 0;
-             nextSubtestBtn.disabled = currentSubtestIndex === completedSubtestsData.length - 1;
-             return;
-        }
-        
-
-
-        currentSubtestDetails.answerDetails.forEach((detail, questionIndex) => {
-            const questionPembahasan = document.createElement("div");
-            questionPembahasan.className = "question-pembahasan";
-
-            const questionText = document.createElement("p");
-            questionText.className = "question-text";
-            questionText.innerHTML = `<strong>Soal ${questionIndex + 1}:</strong> ${detail.questionText.replace(/\n/g, "<br>")}`;
-            questionPembahasan.appendChild(questionText);
-
-            const optionsDiv = document.createElement("div");
-            optionsDiv.className = "options";
-            detail.options.forEach(option => {
-                const label = document.createElement("label");
-                label.textContent = option;
-                optionsDiv.appendChild(label);
-            });
-            questionPembahasan.appendChild(optionsDiv);
-
-            const userAnswerP = document.createElement("p");
-            userAnswerP.className = "user-answer";
-            if (detail.isCorrect) {
-                userAnswerP.classList.add("correct");
-                userAnswerP.innerHTML = `Jawaban Anda: <strong>${detail.userAnswer}</strong> <i class="fas fa-check-circle"></i>`;
-            } else {
-                userAnswerP.classList.add("incorrect");
-                userAnswerP.innerHTML = `Jawaban Anda: <strong>${detail.userAnswer}</strong> <i class="fas fa-times-circle"></i>`;
-            }
-            questionPembahasan.appendChild(userAnswerP);
-
-            const correctAnswerP = document.createElement("p");
-            correctAnswerP.className = "correct-answer";
-            correctAnswerP.innerHTML = `Jawaban Benar: <strong>${detail.correctAnswer}</strong>`;
-            questionPembahasan.appendChild(correctAnswerP);
-
-            
-            const whatsappBtn = document.createElement("a");
-            whatsappBtn.className = "whatsapp-button";
-            whatsappBtn.textContent = "Pembahasan AI WhatsApp";
-            whatsappBtn.target = "_blank";
-
-            let whatsappMessage = `Halo iki aku jelasin soal ${questionIndex + 1} (${subtestName}) dong:\n\n`;
-            whatsappMessage += `${detail.questionText.replace(/\n/g, " ")}\n\n`;
-            whatsappMessage += `Opsi Jawaban:\n`;
-            detail.options.forEach((opt, optIndex) => {
-                whatsappMessage += `${String.fromCharCode(65 + optIndex)}. ${opt}\n`;
-            });
-            whatsappMessage += `\nJawaban saya: ${detail.userAnswer}\n`;
-            whatsappMessage += `Jawaban benar: ${detail.correctAnswer}\n`;
-            whatsappMessage += `Apakah jawaban saya (${detail.userAnswer}) sudah benar? Kalau salah kenapa salah? Kalau benar kenapa benar?`;
-
-            whatsappBtn.href = `https://wa.me/6285732361586?text=${encodeURIComponent(whatsappMessage)}`;
-            questionPembahasan.appendChild(whatsappBtn);
-            
-
-            pembahasanContainer.appendChild(questionPembahasan);
-        });
-
-        
-        prevSubtestBtn.disabled = currentSubtestIndex === 0;
-        nextSubtestBtn.disabled = currentSubtestIndex === completedSubtestsData.length - 1;
-    }
-
-    
-    const snbtTryoutProgress = JSON.parse(localStorage.getItem('snbtTryoutProgress'));
-
-    if (snbtTryoutProgress) {
-        
-        allSubtests.forEach(subtest => {
-            if (snbtTryoutProgress[subtest.id] && snbtTryoutProgress[subtest.id].completed) {
-                completedSubtestsData.push({
-                    id: subtest.id,
-                    name: subtest.name,
-                    details: snbtTryoutProgress[subtest.id] 
-                });
-            }
-        });
-
-        
-        console.log("Completed Subtests Data:", completedSubtestsData);
-
-        
-        let totalScore = 0;
-        if (completedSubtestsData.length > 0) {
-            completedSubtestsData.forEach(subtest => {
-                totalScore += subtest.details.score;
-            });
-            const averageScore = totalScore / completedSubtestsData.length;
-            scoreInfo.innerHTML = `Skor Rata-rata Anda: <strong>${averageScore.toFixed(0)}</strong>`;
-        } else {
-            scoreInfo.innerHTML = "Belum ada subtes yang diselesaikan.";
-        }
-
-        
-        displayCurrentSubtestPembahasan();
-    } else {
-        pembahasanContainer.innerHTML = "<p>Tidak ada data tryout yang ditemukan. Silakan selesaikan tryout terlebih dahulu.</p>";
-        prevSubtestBtn.disabled = true;
-        nextSubtestBtn.disabled = true;
-        currentSubtestNameDisplay.textContent = "";
-    }
-
-    
-    prevSubtestBtn.addEventListener("click", () => {
-        if (currentSubtestIndex > 0) {
-            currentSubtestIndex--;
-            displayCurrentSubtestPembahasan();
-            window.scrollTo(0, 0); 
-        }
-    });
-
-    nextSubtestBtn.addEventListener("click", () => {
-        if (currentSubtestIndex < completedSubtestsData.length - 1) {
-            currentSubtestIndex++;
-            displayCurrentSubtestPembahasan();
-            window.scrollTo(0, 0); 
-        }
-    });
+urutanSubtes.forEach(namaSubtes => {
+  const pembahasanSubtes = JSON.parse(localStorage.getItem(`pembahasan_${namaSubtes}`));
+  if (pembahasanSubtes) {
+    semuaPembahasan.push(...pembahasanSubtes);
+  }
 });
+
+const pembahasanContainer = document.getElementById("pembahasanContainer");
+const prevQuestionBtn = document.getElementById("prevQuestionBtn");
+const nextQuestionBtn = document.getElementById("nextQuestionBtn");
+const whatsappPembahasanBtn = document.getElementById("whatsappPembahasanBtn");
+
+function loadAnswerDetails() {
+    
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith("Jawaban_")) {
+            try {
+                const answerDetail = JSON.parse(localStorage.getItem(key));
+                if (answerDetail) {
+                    allAnswerDetails.push(answerDetail);
+                }
+            } catch (e) {
+                console.error(`Gagal parse ${key}:`, e);
+            }
+        }
+    }
+
+    
+    const summaryKeys = ["pu", "pk", "ppu", "pbm", "litbin", "litbing", "pm"];
+    for (const sub of summaryKeys) {
+        const total = localStorage.getItem(`totalQuestions_${sub}`);
+        const correct = localStorage.getItem(`totalCorrect_${sub}`);
+        const score = localStorage.getItem(`finalScore_${sub}`);
+        if (total && correct && score) {
+            totalQuestions += parseInt(total);
+            correctAnswers += parseInt(correct);
+            finalScore += parseInt(score);
+        }
+    }
+
+    
+    document.getElementById("totalQuestionsSummary").textContent = totalQuestions;
+    document.getElementById("correctAnswersSummary").textContent = correctAnswers;
+    document.getElementById("finalScoreDisplay").textContent = finalScore;
+
+    if (allAnswerDetails.length === 0) {
+        pembahasanContainer.innerHTML = "<p>Tidak ada data pembahasan yang ditemukan. Pastikan Anda telah menyelesaikan tryout.</p>";
+        prevQuestionBtn.style.display = "none";
+        nextQuestionBtn.style.display = "none";
+        whatsappPembahasanBtn.style.display = "none";
+        return;
+    }
+
+    
+    allAnswerDetails.sort((a, b) => a.questionNumber - b.questionNumber);
+
+    displayQuestionPembahasan(currentQuestionIndex);
+    updateNavigationButtons();
+}
+
+function displayQuestionPembahasan(index) {
+    pembahasanContainer.innerHTML = ""; 
+
+    if (index < 0 || index >= allAnswerDetails.length) {
+        console.warn("Indeks soal di luar batas:", index);
+        return;
+    }
+
+    const detail = allAnswerDetails[index];
+    const questionBlock = document.createElement("div");
+    questionBlock.className = "question-block";
+
+    const subId = detail.subtestId || detail.id || "-";
+    const questionNumber = document.createElement("p");
+    questionNumber.innerHTML = `<strong>Soal ${detail.questionNumber} (${subId.toUpperCase()})</strong>`;
+    questionBlock.appendChild(questionNumber);
+
+    const questionText = document.createElement("p");
+    questionText.innerHTML = detail.questionText.replace(/\n/g, "<br>");
+    questionBlock.appendChild(questionText);
+
+    const optionsDiv = document.createElement("div");
+    optionsDiv.className = "options";
+
+    detail.options.forEach(option => {
+        const optionDiv = document.createElement("div");
+        optionDiv.textContent = option;
+
+        const optionChar = option.charAt(0);
+
+        if (optionChar === detail.correctAnswer) {
+            optionDiv.classList.add("option-correct");
+            optionDiv.innerHTML += ' &#10003; (Jawaban Benar)';
+        } else if (optionChar === detail.userAnswer) {
+            optionDiv.classList.add("option-incorrect");
+            optionDiv.innerHTML += ' &#10007; (Jawaban Anda)';
+        } else {
+            optionDiv.classList.add("option-default");
+        }
+
+        optionsDiv.appendChild(optionDiv);
+    });
+
+    questionBlock.appendChild(optionsDiv);
+    pembahasanContainer.appendChild(questionBlock);
+
+    updateNavigationButtons();
+    updateWhatsappButton(detail);
+}
+
+function updateNavigationButtons() {
+    prevQuestionBtn.disabled = currentQuestionIndex === 0;
+    nextQuestionBtn.disabled = currentQuestionIndex === allAnswerDetails.length - 1;
+}
+
+function updateWhatsappButton(detail) {
+    const userName = localStorage.getItem("snbtUserName") || "Pengguna";
+    const message = `Halo Iki Aku ${userName}, jelasin Soal \n\n ${detail.questionNumber}: "${detail.questionText.replace(/<br>/g, "\n")}" \n\nOpsi: ${detail.options.join(', ')} \n\nJawaban Benar: ${detail.correctAnswer} \n\nKenapa?`;
+    const encodedMessage = encodeURIComponent(message);
+    whatsappPembahasanBtn.href = `https://wa.me/6285732361586?text=${encodedMessage}`;
+}
+
+prevQuestionBtn.addEventListener("click", () => {
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        displayQuestionPembahasan(currentQuestionIndex);
+    }
+});
+
+nextQuestionBtn.addEventListener("click", () => {
+    if (currentQuestionIndex < allAnswerDetails.length - 1) {
+        currentQuestionIndex++;
+        displayQuestionPembahasan(currentQuestionIndex);
+    }
+});
+
+document.addEventListener("DOMContentLoaded", loadAnswerDetails);
