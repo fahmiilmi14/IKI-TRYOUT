@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Form Pendaftaran</title>
+</head>
+<body>
+
+<script>
+  let userIP = null;
+
+  
+  fetch("https://api.ipify.org?format=json")
+    .then(res => res.json())
+    .then(data => {
+      userIP = data.ip;
+      const sudahSubmitIPs = JSON.parse(localStorage.getItem("ipYangSudahSubmit")) || [];
+
+      if (sudahSubmitIPs.includes(userIP)) {
+        
+        window.location.href = "https://iki-tryout.web.app/coba.html"; // Ganti sesuai tujuan
+      } else {
+        
+        const script = document.createElement("script");
+        script.src = "https://form.jotform.com/jsform/251760606738058";
+        document.body.appendChild(script);
+      }
+    });
+
+  
+  window.addEventListener("message", function (e) {
+    if (typeof e.data === "string" && e.data.includes("submission_id") && userIP) {
+      
+      const ipList = JSON.parse(localStorage.getItem("ipYangSudahSubmit")) || [];
+      ipList.push(userIP);
+      localStorage.setItem("ipYangSudahSubmit", JSON.stringify(ipList));
+
+      // Redirect
+      window.location.href = "https://iki-tryout.web.app/coba.html";
+    }
+  });
+</script>
+
+</body>
+</html>
