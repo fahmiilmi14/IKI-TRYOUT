@@ -10,16 +10,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const subtestContainer = document.getElementById('subtestContainer');
     const downloadCertificateBtn = document.getElementById('downloadCertificateBtn');
     const downloadMessage = document.getElementById('downloadMessage');
-    const viewPembahasanBtn = document.getElementById('viewPembahasanBtn'); // Ambil elemen tombol pembahasan
+    const viewPembahasanBtn = document.getElementById('viewPembahasanBtn'); 
 
     const SUBTESTS = [
         { id: 'pu', name: 'Penalaran Umum', description: 'Menguji kemampuan penalaran Anda.' },
         { id: 'pk', name: 'Pengetahuan Kuantitatif', description: 'Menguji kemampuan matematika dasar Anda.' },
         { id: 'pbm', name: 'Pengetahuan & Pemahaman Membaca', description: 'Menguji pemahaman teks Anda.' },
-        { id: 'ppu', name: 'Penalaran & Pengetahuan Umum', description: 'Menguji wawasan umum dan analitis.' },
+        { id: 'ppu', name: 'Penalaran & Pengetahuan Umum', description: 'Menguji wawasan dan analitis Anda.' },
         { id: 'bing', name: 'Bahasa Inggris', description: 'Menguji kemampuan bahasa Inggris Anda.' },
         { id: 'bi', name: 'Bahasa Indonesia', description: 'Menguji pemahaman kaidah bahasa Indonesia.' },
-        { id: 'Penalaran matematika', name: 'Penalaran matematika', description: 'Menguji kemampuan literasi baca-tulis.' }
+        { id: 'Penalaran matematika', name: 'Penalaran matematika', description: 'Menguji kemampuan Matematika dan penalaran Anda.' }
     ];
 
     function checkUserName() {
