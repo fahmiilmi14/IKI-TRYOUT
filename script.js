@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (profilePicture) {
                 headerProfilePic.src = profilePicture;
             } else {
-                headerProfilePic.src = "https://via.placeholder.com/40"; // Placeholder default
+                headerProfilePic.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA5PEwhbsNXhz2W4XBW7nQNkoGq7jQwRe9ho3K05jZ4F9b93VdyqE-zPs&s=10"; // Placeholder default
             }
         }
 
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (profilePicture) {
                 document.getElementById('headerProfilePic').src = profilePicture;
             } else {
-                document.getElementById('headerProfilePic').src = "https://via.placeholder.com/40";
+                document.getElementById('headerProfilePic').src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA5PEwhbsNXhz2W4XBW7nQNkoGq7jQwRe9ho3K05jZ4F9b93VdyqE-zPs&s=10";
             }
         }
     });
