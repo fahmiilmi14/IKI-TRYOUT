@@ -1,7 +1,6 @@
-
 :root {
-    --primary-color: #007bff; /* Biru terang, menggantikan hijau awal */
-    --secondary-color: #FFC107; /* Amber */
+    --primary-color: #007bff; 
+    --secondary-color: #FFC107; 
     --dark-color: #333;
     --light-color: #f4f4f4;
     --white-color: #fff;
@@ -31,7 +30,7 @@ body {
     padding: 0 20px;
 }
 
-.btn-primary1 { /* Custom button for modal */
+.btn-primary1 { 
     display: inline-block;
     background: #FFC107;
     color: var(--white-color);
@@ -66,7 +65,7 @@ p {
     margin-bottom: 1rem;
 }
 
-/* Buttons */
+
 .btn-primary, .btn-secondary {
     display: inline-block;
     background: var(--primary-color);
@@ -81,7 +80,7 @@ p {
 }
 
 .btn-primary:hover {
-    background: #0056b3; /* Darker blue */
+    background: #0056b3; 
 }
 
 .btn-secondary {
@@ -90,10 +89,10 @@ p {
 }
 
 .btn-secondary:hover {
-    background: #FFD700; /* Darker amber */
+    background: #FFD700; 
 }
 
-/* Header */
+
 header {
     background: var(--white-color);
     color: var(--dark-color);
@@ -144,10 +143,7 @@ header nav ul li a:hover::after {
     width: 100%;
 }
 
-/* --- Specific Tryout Page Styling --- */
-.question-block p {
-  text-align: justify;
-}
+
 
 .tryout-container {
     padding: 80px 20px;
@@ -159,8 +155,8 @@ header nav ul li a:hover::after {
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     margin-top: 30px;
     margin-bottom: 50px;
-    position: relative; /* Added for z-index context if needed */
-    z-index: 1; /* Ensure it's above other things potentially */
+    position: relative; 
+    z-index: 1; 
 }
 
 .tryout-container h2 {
@@ -176,9 +172,12 @@ header nav ul li a:hover::after {
     margin-bottom: 20px;
 }
 
-/* Form Styling - KEY FIX HERE */
+
 #tryoutForm {
-    min-height: 200px; /* Added min-height to ensure it takes space even when empty */
+    min-height: 200px; 
+}
+.question-block p {
+  text-align: justify;
 }
 
 #tryoutForm .question-block {
@@ -187,17 +186,17 @@ header nav ul li a:hover::after {
     padding: 25px;
     margin-bottom: 25px;
     text-align: left;
-    display: none; /* Default hidden, will be shown by JS using .active */
-    opacity: 0; /* Fade in effect */
-    transition: opacity 0.3s ease-in-out; /* Smooth transition */
+    display: none; 
+    opacity: 0; 
+    transition: opacity 0.3s ease-in-out; 
 }
 
 #tryoutForm .question-block.active {
-    display: block; /* Show active question */
-    opacity: 1; /* Fully visible */
+    display: block; 
+    opacity: 1; 
 }
 
-#tryoutForm .question-block p { /* Simplified selector for question text */
+#tryoutForm .question-block p { 
     font-size: 1rem;
     margin-bottom: 15px;
     color: var(--dark-color);
@@ -224,12 +223,15 @@ header nav ul li a:hover::after {
     transform: scale(1.2);
 }
 
-/* Navigation Buttons */
+
 .navigation-buttons {
     margin-top: 30px;
     display: flex;
     justify-content: center;
     gap: 15px;
+    background-color: #4A90E2;
+    color: white;
+    border:none;
 }
 
 .navigation-buttons button {
@@ -246,14 +248,16 @@ header nav ul li a:hover::after {
 }
 
 #submitBtn {
-    background-color: #dc3545; /* Bootstrap-like danger color */
+    background-color: #dc3545; 
+    color: white;
+    border: none;
 }
 
 #submitBtn:hover {
     background-color: #c82333;
 }
 
-/* Result Section */
+
 #result {
     margin-top: 40px;
     padding: 30px;
@@ -274,7 +278,7 @@ header nav ul li a:hover::after {
     margin-bottom: 10px;
 }
 
-/* Footer */
+
 footer {
     background: var(--dark-color);
     color: var(--white-color);
@@ -298,7 +302,7 @@ footer .social-links a:hover {
     color: var(--primary-color);
 }
 
-/* Profile in Header */
+
 .profile-nav {
     display: flex;
     align-items: center;
@@ -334,7 +338,7 @@ footer .social-links a:hover {
     max-width: 100px;
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
     header .container {
         flex-direction: column;
