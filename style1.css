@@ -229,15 +229,16 @@ header nav ul li a:hover::after {
     display: flex;
     justify-content: center;
     gap: 15px;
-    background-color: #4A90E2;
-    color: white;
-    border:none;
+    
 }
 
 .navigation-buttons button {
     padding: 12px 25px;
     border-radius: 38px;
     font-size: 1rem;
+    background-color: #4A90E2;
+    color: white;
+    border:none;
 }
 
 .navigation-buttons button:disabled {
