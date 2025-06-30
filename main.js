@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('main.js: DOMContentLoaded event fired.');
+    
 
     const nameModal = document.getElementById('nameModal');
     const userNameInput = document.getElementById('userNameInput');
@@ -22,14 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkUserName() {
         const userName = localStorage.getItem('snbtUserName');
-        console.log('main.js: checkUserName called. userName:', userName);
+        
         if (!userName) {
             if (nameModal) {
                 nameModal.style.display = 'flex';
                 userNameInput.focus();
-            } else {
-                console.error("main.js: Elemen nameModal tidak ditemukan.");
-            }
+            
         } else {
             if (welcomeMessage) welcomeMessage.textContent = `Selamat Datang, ${userName}!`;
             if (nameModal) nameModal.style.display = 'none';
@@ -55,17 +53,17 @@ document.addEventListener('DOMContentLoaded', () => {
     function getSubtestProgress() {
         try {
             const allTryoutData = JSON.parse(localStorage.getItem('snbtTryoutProgress')) || {};
-            console.log('main.js: getSubtestProgress - Current progress:', allTryoutData);
+            
             return allTryoutData;
         } catch (e) {
-            console.error("main.js: Error parsing localStorage 'snbtTryoutProgress':", e);
+            
             return {};
         }
     }
 
     
     function saveSubtestProgress(subtestId, score, answerDetails) { 
-        console.log(`main.js: saveSubtestProgress called for subtestId: ${subtestId}, score: ${score}`);
+        
         const allTryoutData = getSubtestProgress();
         allTryoutData[subtestId] = {
             completed: true,
@@ -75,9 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         try {
             localStorage.setItem('snbtTryoutProgress', JSON.stringify(allTryoutData));
-            console.log('main.js: Progress saved to localStorage:', allTryoutData);
+            
         } catch (e) {
-            console.error("main.js: Error saving to localStorage 'snbtTryoutProgress':", e);
+            
             alert("Gagal menyimpan progres tryout Anda. Pastikan browser Anda tidak dalam mode private/incognito.");
         }
         renderSubtests();
@@ -85,9 +83,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderSubtests() {
-        console.log('main.js: renderSubtests called.');
+        
         if (!subtestContainer) {
-            console.error('main.js: Elemen subtestContainer tidak ditemukan. Tidak dapat merender subtes.');
+            
             return;
         }
         subtestContainer.innerHTML = '';
