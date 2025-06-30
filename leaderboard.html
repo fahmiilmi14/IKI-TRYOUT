@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leaderboard IKI TRYOUT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+      --gold-gradient: linear-gradient(135deg, #FFD700, #FFA500);
+      --silver-gradient: linear-gradient(135deg, #C0C0C0, #A9A9A9);
+      --bronze-gradient: linear-gradient(135deg, #CD7F32, #A0522D);
+      --primary-color: #007bff;
+      --text-dark: #333;
+      --text-light: #fff;
+      --shadow-light: rgba(0, 0, 0, 0.1);
+      --shadow-medium: rgba(0, 0, 0, 0.15);
+      --shadow-strong: rgba(0, 0, 0, 0.25);
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--primary-gradient);
+      margin: 0;
+      padding: 30px 20px;
+      text-align: center;
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden; 
+    }
+
+    h2 {
+      color: var(--text-light);
+      font-size: 2.5em;
+      margin-bottom: 30px;
+      text-shadow: 0 4px 8px var(--shadow-medium);
+      letter-spacing: 1.5px;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background-color: var(--text-light);
+      border-radius: 2px;
+    }
+
+    .top-3 {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 40px;
+      flex-wrap: wrap; 
+      align-items: flex-end; 
+    }
+
+    .card {
+      background: var(--text-light);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px var(--shadow-medium);
+      padding: 25px;
+      width: 150px;
+      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, min-height 0.3s ease; 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px; 
+      animation: fadeIn 0.8s ease-out; 
+    }
+
+    .card:hover {
+      transform: translateY(-10px) scale(1.03); 
+      box-shadow: 0 15px 40px var(--shadow-strong);
+    }
+
+    
+    .card.gold {
+      background: var(--gold-gradient);
+      color: var(--text-light);
+      transform: translateY(-20px) scale(1.1); 
+      box-shadow: 0 15px 40px rgba(255, 215, 0, 0.4);
+      border: 3px solid #FFEA00; 
+      min-height: 250px; 
+    }
+    .card.gold:hover {
+      transform: translateY(-25px) scale(1.15); 
+    }
+    .card.silver {
+      background: var(--silver-gradient);
+      color: var(--text-light);
+      border: 3px solid #E0E0E0;
+    }
+    .card.bronze {
+      background: var(--bronze-gradient);
+      color: var(--text-light);
+      border: 3px solid #E6B800;
+    }
+
+    .card .medal {
+      position: absolute;
+      top: -15px;
+      right: -15px;
+      font-size: 3em;
+      line-height: 1;
+      text-shadow: 0 2px 5px var(--shadow-medium);
+      animation: bounceIn 0.6s ease-out; 
+    }
+
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #e0e0e0; 
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 2.2em;
+      color: #666; 
+      box-shadow: 0 2px 10px var(--shadow-light);
+      border: 3px solid #ccc;
+      transition: all 0.3s ease; 
+    }
+
+    .card.gold .avatar { color: var(--gold-gradient); border-color: #FFEA00; background: var(--text-light); }
+    .card.silver .avatar { color: var(--silver-gradient); border-color: #E0E0E0; background: var(--text-light); }
+    .card.bronze .avatar { color: var(--bronze-gradient); border-color: #E6B800; background: var(--text-light); }
+
+    .name {
+      font-weight: 600;
+      font-size: 1.2em;
+      margin-bottom: 8px;
+      word-break: break-word; 
+      text-align: center;
+    }
+
+    .score {
+      font-size: 1.8em;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    .card.gold .score, .card.silver .score, .card.bronze .score {
+      color: var(--text-light); 
+      text-shadow: 0 1px 3px var(--shadow-medium);
+    }
+
+    .table-container {
+      max-width: 800px;
+      width: 100%;
+      margin: auto;
+      background: var(--text-light);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px var(--shadow-medium);
+      animation: slideInUp 0.8s ease-out; 
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--primary-color);
+      color: var(--text-light);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #eef;
+      transform: scale(1.01); 
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    td:first-child {
+      font-weight: 600;
+      color: #555;
+    }
+
+    td:last-child {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideInUp {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    
+    @media (max-width: 768px) {
+      .top-3 {
+        flex-direction: column; 
+        align-items: center;
+        gap: 20px;
+      }
+      .card {
+        width: 90%; 
+        max-width: 200px; 
+        padding: 20px; 
+        min-height: 180px; 
+      }
+      .card.gold {
+        transform: translateY(0) scale(1.03); 
+        min-height: 210px; 
+      }
+      .card.gold:hover {
+        transform: translateY(-5px) scale(1.07); 
+      }
+      h2 {
+        font-size: 2em;
+        margin-bottom: 20px;
+      }
+      .avatar {
+        width: 60px; 
+        height: 60px;
+        font-size: 2em;
+      }
+      .name {
+        font-size: 1em; 
+      }
+      .score {
+        font-size: 1.5em; 
+      }
+      .card .medal {
+        font-size: 2.5em; 
+        top: -10px;
+        right: -10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 20px 10px;
+      }
+      .card {
+        width: 95%; 
+        max-width: 180px;
+        padding: 15px;
+      }
+      .avatar {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5em;
+      }
+      .name {
+        font-size: 0.9em;
+      }
+      .score {
+        font-size: 1.3em;
+      }
+      h2 {
+        font-size: 1.8em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>Leaderboard IKI TRYOUT</h2>
+  <div class="top-3" id="topThree"></div>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Nama</th>
+          <th>Skor Rata-rata</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboardBody">
+        <tr><td colspan="3" style="text-align: center;">Memuat data...</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAgDnNJ2rw_O-JvG7grPGG9lX1xwTes2Bk",
+      authDomain: "leader-45b66.firebaseapp.com",
+      databaseURL: "https://leader-45b66-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "leader-45b66",
+      storageBucket: "leader-45b66.appspot.com",
+      messagingSenderId: "446405214951",
+      appId: "1:446405214951:web:5dc651204e05f82e4d5842"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const leaderboardBody = document.getElementById("leaderboardBody");
+    const topThree = document.getElementById("topThree");
+
+    db.ref("leaderboard").once("value").then(snapshot => {
+      const data = snapshot.val();
+      const users = {};
+
+      for (const key in data) {
+        const item = data[key];
+        const nama = item.nama;
+        const skor = Number(item.skor);
+        if (!users[nama]) users[nama] = [];
+        if (!isNaN(skor)) users[nama].push(skor);
+      }
+
+      const result = Object.entries(users).map(([nama, skorList]) => {
+        const avg = Math.round(skorList.reduce((a,b)=>a+b,0) / skorList.length);
+        return { nama, skor: avg };
+      }).sort((a,b)=>b.skor-a.skor);
+
+      leaderboardBody.innerHTML = "";
+      topThree.innerHTML = ""; 
+
+      result.forEach((item, i) => {
+        if (i < 3) {
+          const div = document.createElement("div");
+          let medalEmoji = '';
+          let cardClass = 'card';
+          if (i === 0) {
+            medalEmoji = '🥇';
+            cardClass += ' gold';
+          } else if (i === 1) {
+            medalEmoji = '🥈';
+            cardClass += ' silver';
+          } else if (i === 2) {
+            medalEmoji = '🥉';
+            cardClass += ' bronze';
+          }
+
+          div.className = cardClass;
+          div.innerHTML = `
+            <div class="medal">${medalEmoji}</div>
+            <div class="avatar">${item.nama[0] ? item.nama[0].toUpperCase() : ''}</div>
+            <div class="name">${item.nama}</div>
+            <div class="score">${item.skor}</div>
+          `;
+          topThree.appendChild(div);
+        } else {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${i + 1}</td>
+            <td>${item.nama}</td>
+            <td>${item.skor}</td>
+          `;
+          leaderboardBody.appendChild(row);
+        }
+      });
+    }).catch(error => {
+        console.error("Error fetching data:", error);
+        leaderboardBody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: red;">Gagal memuat data: ${error.message}</td></tr>`;
+    });
+  </script>
+</body>
+</html>
