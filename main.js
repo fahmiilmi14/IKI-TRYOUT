@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'pbm', name: 'Pengetahuan & Pemahaman Membaca', description: 'Menguji pemahaman teks Anda.' },
         { id: 'ppu', name: 'Penalaran & Pengetahuan Umum', description: 'Menguji wawasan umum dan analitis.' },
         { id: 'bing', name: 'Bahasa Inggris', description: 'Menguji kemampuan bahasa Inggris Anda.' },
-        { id: 'bi', name: 'Bahasa Indonesia', description: 'Menguji pemahaman kaidah bahasa Indonesia.' },
-        { id: 'Penalaran matematika', name: 'Penalaran matematika', description: 'Menguji kemampuan literasi baca-tulis.' }
+        { id: 'bi', name: 'Bahasa Indonesia', description: 'Menguji pemahaman literasi bahasa Indonesia.' },
+        { id: 'Penalaran matematika', name: 'Penalaran Matematika', description: 'Menguji kemampuan Matematika dan Penalaran Anda.' }
     ];
 
     function checkUserName() {
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const allTryoutData = getSubtestProgress();
 
         SUBTESTS.forEach(subtest => {
-            const isCompleted = allTryoutData[subtest.id]?.completed;
+            const isCompleted = allTryoutData[subtest.id] && allTryoutData[subtest.id].completed;
             const subtestScore = isCompleted ? allTryoutData[subtest.id].score : '-';
 
             const card = document.createElement('div');
@@ -107,7 +107,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkAllSubtestsCompleted() {
         const allTryoutData = getSubtestProgress();
-        const allCompleted = SUBTESTS.every(subtest => allTryoutData[subtest.id]?.completed);
+        const allCompleted = SUBTESTS.every(subtest =>
+            allTryoutData.hasOwnProperty(subtest.id) &&
+            allTryoutData[subtest.id].completed === true
+        );
 
         if (downloadCertificateBtn) {
             if (allCompleted) {
@@ -146,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const finalScore = urlParams.get('score');
     const answerDetailsString = urlParams.get('answerDetails');
     let answerDetails = [];
+
     if (answerDetailsString) {
         try {
             answerDetails = JSON.parse(decodeURIComponent(answerDetailsString));
@@ -158,6 +162,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     checkUserName();
+
+    if (downloadCertificateBtn) {
+        downloadCertificateBtn.addEventListener('click', () => {
+            if (!downloadCertificateBtn.disabled) {
+                window.location.href = 'sertifikat.html';
+            }
+        });
+    }
 });
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -168,7 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadProfileHeader() {
         const userName = localStorage.getItem('snbtUserName') || 'Profil';
         const profilePicture = localStorage.getItem('snbtProfilePicture');
-
         headerUserName.textContent = userName;
         headerProfilePic.src = profilePicture || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA5PEwhbsNXhz2W4XBW7nQNkoGq7jQwRe9ho3K05jZ4F9b93VdyqE-zPs&s=10";
     }
