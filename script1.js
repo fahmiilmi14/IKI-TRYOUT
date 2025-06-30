@@ -293,7 +293,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const headerProfilePic = document.getElementById("headerProfilePic");
     const headerUserName = document.getElementById("headerUserName");
     const userName = localStorage.getItem("snbtUserName") || "Profil";
-    const userProfilePic = localStorage.getItem("snbtProfilePicture") || "https://via.placeholder.com/40";
+    const userProfilePic = localStorage.getItem("snbtProfilePicture") || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA5PEwhbsNXhz2W4XBW7nQNkoGq7jQwRe9ho3K05jZ4F9b93VdyqE-zPs&s=10";
 
     if (headerUserName) headerUserName.textContent = userName;
     if (headerProfilePic) headerProfilePic.src = userProfilePic;
