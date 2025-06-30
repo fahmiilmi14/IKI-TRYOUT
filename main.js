@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
-
     const nameModal = document.getElementById('nameModal');
     const userNameInput = document.getElementById('userNameInput');
     const saveNameBtn = document.getElementById('saveNameBtn');
@@ -8,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const subtestContainer = document.getElementById('subtestContainer');
     const downloadCertificateBtn = document.getElementById('downloadCertificateBtn');
     const downloadMessage = document.getElementById('downloadMessage');
-    const viewPembahasanBtn = document.getElementById('viewPembahasanBtn'); 
+    const viewPembahasanBtn = document.getElementById('viewPembahasanBtn');
 
     const SUBTESTS = [
         { id: 'pu', name: 'Penalaran Umum', description: 'Menguji kemampuan penalaran Anda.' },
@@ -22,12 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkUserName() {
         const userName = localStorage.getItem('snbtUserName');
-        
         if (!userName) {
             if (nameModal) {
                 nameModal.style.display = 'flex';
                 userNameInput.focus();
-            
+            }
         } else {
             if (welcomeMessage) welcomeMessage.textContent = `Selamat Datang, ${userName}!`;
             if (nameModal) nameModal.style.display = 'none';
@@ -46,36 +43,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Nama tidak boleh kosong!');
             }
         });
-    } else {
-        console.warn("main.js: Elemen saveNameBtn tidak ditemukan.");
     }
 
     function getSubtestProgress() {
         try {
-            const allTryoutData = JSON.parse(localStorage.getItem('snbtTryoutProgress')) || {};
-            
-            return allTryoutData;
-        } catch (e) {
-            
+            return JSON.parse(localStorage.getItem('snbtTryoutProgress')) || {};
+        } catch {
             return {};
         }
     }
 
-    
-    function saveSubtestProgress(subtestId, score, answerDetails) { 
-        
+    function saveSubtestProgress(subtestId, score, answerDetails) {
         const allTryoutData = getSubtestProgress();
         allTryoutData[subtestId] = {
             completed: true,
             score: score,
             timestamp: new Date().toISOString(),
-            answerDetails: answerDetails 
+            answerDetails: answerDetails
         };
         try {
             localStorage.setItem('snbtTryoutProgress', JSON.stringify(allTryoutData));
-            
-        } catch (e) {
-            
+        } catch {
             alert("Gagal menyimpan progres tryout Anda. Pastikan browser Anda tidak dalam mode private/incognito.");
         }
         renderSubtests();
@@ -83,23 +71,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderSubtests() {
-        
-        if (!subtestContainer) {
-            
-            return;
-        }
+        if (!subtestContainer) return;
         subtestContainer.innerHTML = '';
         const allTryoutData = getSubtestProgress();
 
         SUBTESTS.forEach(subtest => {
-            const isCompleted = allTryoutData[subtest.id] && allTryoutData[subtest.id].completed;
+            const isCompleted = allTryoutData[subtest.id]?.completed;
             const subtestScore = isCompleted ? allTryoutData[subtest.id].score : '-';
 
             const card = document.createElement('div');
             card.classList.add('subtest-card');
-            if (isCompleted) {
-                card.classList.add('completed');
-            }
+            if (isCompleted) card.classList.add('completed');
 
             card.innerHTML = `
                 <h4>${subtest.name}</h4>
@@ -121,112 +103,81 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         });
-        console.log('main.js: Subtests rendered.');
     }
 
     function checkAllSubtestsCompleted() {
-    console.log('main.js: checkAllSubtestsCompleted called.');
-    const allTryoutData = getSubtestProgress();
-    const allCompleted = SUBTESTS.every(subtest => allTryoutData[subtest.id] && allTryoutData[subtest.id].completed);
+        const allTryoutData = getSubtestProgress();
+        const allCompleted = SUBTESTS.every(subtest => allTryoutData[subtest.id]?.completed);
 
-    if (downloadCertificateBtn) {
-        if (allCompleted) {
-            downloadCertificateBtn.disabled = false;
-            downloadCertificateBtn.style.backgroundColor = '#28a745';
-            if (downloadMessage) downloadMessage.textContent = 'Semua subtes selesai! Klik untuk mengunduh sertifikat Anda.';
-            console.log('main.js: All subtests completed. Download button enabled.');
-            
-            if (viewPembahasanBtn) {
-                viewPembahasanBtn.style.display = 'inline-block';
-            }
-
-            const leaderboardBtn = document.getElementById('viewLeaderboardBtn');
-            if (leaderboardBtn) {
-                leaderboardBtn.style.display = 'inline-block';
-            }
-
-        } else {
-            downloadCertificateBtn.disabled = true;
-            downloadCertificateBtn.style.backgroundColor = '#ccc';
-            if (downloadMessage) downloadMessage.textContent = 'Selesaikan semua subtes untuk mengunduh sertifikat.';
-            console.log('main.js: Not all subtests completed. Download button disabled.');
-
-            if (viewPembahasanBtn) {
-                viewPembahasanBtn.style.display = 'none';
-            }
-
-            const leaderboardBtn = document.getElementById('viewLeaderboardBtn');
-            if (leaderboardBtn) {
-                leaderboardBtn.style.display = 'none';
+        if (downloadCertificateBtn) {
+            if (allCompleted) {
+                downloadCertificateBtn.disabled = false;
+                downloadCertificateBtn.style.backgroundColor = '#28a745';
+                if (downloadMessage) downloadMessage.textContent = 'Semua subtes selesai! Klik untuk mengunduh sertifikat Anda.';
+                if (viewPembahasanBtn) viewPembahasanBtn.style.display = 'inline-block';
+                const leaderboardBtn = document.getElementById('viewLeaderboardBtn');
+                if (leaderboardBtn) leaderboardBtn.style.display = 'inline-block';
+            } else {
+                downloadCertificateBtn.disabled = true;
+                downloadCertificateBtn.style.backgroundColor = '#ccc';
+                if (downloadMessage) downloadMessage.textContent = 'Selesaikan semua subtes untuk mengunduh sertifikat.';
+                if (viewPembahasanBtn) viewPembahasanBtn.style.display = 'none';
+                const leaderboardBtn = document.getElementById('viewLeaderboardBtn');
+                if (leaderboardBtn) leaderboardBtn.style.display = 'none';
             }
         }
     }
-}
+
     if (viewPembahasanBtn) {
         viewPembahasanBtn.addEventListener('click', () => {
-            window.location.href = 'pembahasan.html'; 
+            window.location.href = 'pembahasan.html';
         });
     }
-const leaderboardBtn = document.getElementById('viewLeaderboardBtn');
-if (leaderboardBtn) {
-    leaderboardBtn.addEventListener('click', () => {
-        window.location.href = 'leaderboard.html'; 
-    });
-}
-    console.log('main.js: Starting page initialization.');
+
+    const leaderboardBtn = document.getElementById('viewLeaderboardBtn');
+    if (leaderboardBtn) {
+        leaderboardBtn.addEventListener('click', () => {
+            window.location.href = 'leaderboard.html';
+        });
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const completedSubtestId = urlParams.get('subtestId');
     const finalScore = urlParams.get('score');
-    
     const answerDetailsString = urlParams.get('answerDetails');
     let answerDetails = [];
     if (answerDetailsString) {
         try {
             answerDetails = JSON.parse(decodeURIComponent(answerDetailsString));
-        } catch (e) {
-            console.error("main.js: Error parsing answerDetails from URL:", e);
-        }
+        } catch {}
     }
 
-
     if (completedSubtestId && finalScore) {
-        console.log(`main.js: Detected completed subtest. ID: ${completedSubtestId}, Score: ${finalScore}`);
-        
         saveSubtestProgress(completedSubtestId, parseInt(finalScore), answerDetails);
-        
         window.history.replaceState({}, document.title, window.location.pathname);
-        console.log('main.js: URL parameters cleared.');
     }
 
     checkUserName();
-    console.log('main.js: Page initialization finished.');
 });
+
 document.addEventListener('DOMContentLoaded', () => {
-        const headerProfilePic = document.getElementById('headerProfilePic');
-        const headerUserName = document.getElementById('headerUserName');
-        const profileNav = document.getElementById('profileNav');
+    const headerProfilePic = document.getElementById('headerProfilePic');
+    const headerUserName = document.getElementById('headerUserName');
+    const profileNav = document.getElementById('profileNav');
 
-        
-        function loadProfileHeader() {
-            const userName = localStorage.getItem('snbtUserName') || 'Profil'; 
-            const profilePicture = localStorage.getItem('snbtProfilePicture');
+    function loadProfileHeader() {
+        const userName = localStorage.getItem('snbtUserName') || 'Profil';
+        const profilePicture = localStorage.getItem('snbtProfilePicture');
 
-            headerUserName.textContent = userName;
+        headerUserName.textContent = userName;
+        headerProfilePic.src = profilePicture || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA5PEwhbsNXhz2W4XBW7nQNkoGq7jQwRe9ho3K05jZ4F9b93VdyqE-zPs&s=10";
+    }
 
-            if (profilePicture) {
-                headerProfilePic.src = profilePicture;
-            } else {
-                headerProfilePic.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA5PEwhbsNXhz2W4XBW7nQNkoGq7jQwRe9ho3K05jZ4F9b93VdyqE-zPs&s=10"; 
-            }
-        }
+    loadProfileHeader();
 
-        
-        loadProfileHeader();
-
-        
-        if (profileNav) {
-            profileNav.addEventListener('click', () => {
-                window.location.href = 'profil.html'; 
-            });
-        }
-    });
+    if (profileNav) {
+        profileNav.addEventListener('click', () => {
+            window.location.href = 'profil.html';
+        });
+    }
+});
