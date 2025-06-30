@@ -1,5 +1,3 @@
-// main.js
-
 document.addEventListener('DOMContentLoaded', () => {
     console.log('main.js: DOMContentLoaded event fired.');
 
@@ -16,15 +14,15 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'pu', name: 'Penalaran Umum', description: 'Menguji kemampuan penalaran Anda.' },
         { id: 'pk', name: 'Pengetahuan Kuantitatif', description: 'Menguji kemampuan matematika dasar Anda.' },
         { id: 'pbm', name: 'Pengetahuan & Pemahaman Membaca', description: 'Menguji pemahaman teks Anda.' },
-        { id: 'ppu', name: 'Penalaran & Pengetahuan Umum', description: 'Menguji wawasan dan analitis Anda.' },
+        { id: 'ppu', name: 'Penalaran & Pengetahuan Umum', description: 'Menguji wawasan umum dan analitis.' },
         { id: 'bing', name: 'Bahasa Inggris', description: 'Menguji kemampuan bahasa Inggris Anda.' },
         { id: 'bi', name: 'Bahasa Indonesia', description: 'Menguji pemahaman kaidah bahasa Indonesia.' },
-        { id: 'Penalaran matematika', name: 'Penalaran matematika', description: 'Menguji kemampuan Matematika dan penalaran Anda.' }
+        { id: 'Penalaran matematika', name: 'Penalaran matematika', description: 'Menguji kemampuan literasi baca-tulis.' }
     ];
 
     function checkUserName() {
         const userName = localStorage.getItem('snbtUserName');
-        
+        console.log('main.js: checkUserName called. userName:', userName);
         if (!userName) {
             if (nameModal) {
                 nameModal.style.display = 'flex';
@@ -57,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function getSubtestProgress() {
         try {
             const allTryoutData = JSON.parse(localStorage.getItem('snbtTryoutProgress')) || {};
-            
+            console.log('main.js: getSubtestProgress - Current progress:', allTryoutData);
             return allTryoutData;
         } catch (e) {
             console.error("main.js: Error parsing localStorage 'snbtTryoutProgress':", e);
@@ -65,19 +63,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Fungsi ini sekarang juga akan menyimpan detail jawaban untuk pembahasan
-    function saveSubtestProgress(subtestId, score, answerDetails) { // Tambahkan parameter answerDetails
-        
+    
+    function saveSubtestProgress(subtestId, score, answerDetails) { 
+        console.log(`main.js: saveSubtestProgress called for subtestId: ${subtestId}, score: ${score}`);
         const allTryoutData = getSubtestProgress();
         allTryoutData[subtestId] = {
             completed: true,
             score: score,
             timestamp: new Date().toISOString(),
-            answerDetails: answerDetails // Simpan detail jawaban di sini
+            answerDetails: answerDetails 
         };
         try {
             localStorage.setItem('snbtTryoutProgress', JSON.stringify(allTryoutData));
-            
+            console.log('main.js: Progress saved to localStorage:', allTryoutData);
         } catch (e) {
             console.error("main.js: Error saving to localStorage 'snbtTryoutProgress':", e);
             alert("Gagal menyimpan progres tryout Anda. Pastikan browser Anda tidak dalam mode private/incognito.");
@@ -129,52 +127,59 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkAllSubtestsCompleted() {
-        console.log('main.js: checkAllSubtestsCompleted called.');
-        const allTryoutData = getSubtestProgress();
-        const allCompleted = SUBTESTS.every(subtest => allTryoutData[subtest.id] && allTryoutData[subtest.id].completed);
+    console.log('main.js: checkAllSubtestsCompleted called.');
+    const allTryoutData = getSubtestProgress();
+    const allCompleted = SUBTESTS.every(subtest => allTryoutData[subtest.id] && allTryoutData[subtest.id].completed);
 
-        if (downloadCertificateBtn) {
-            if (allCompleted) {
-                downloadCertificateBtn.disabled = false;
-                downloadCertificateBtn.style.backgroundColor = '#28a745';
-                if (downloadMessage) downloadMessage.textContent = 'Semua subtes selesai! Klik untuk mengunduh sertifikat Anda.';
-                
-                // Tampilkan tombol pembahasan
-                if (viewPembahasanBtn) {
-                    viewPembahasanBtn.style.display = 'inline-block';
-                }
-            } else {
-                downloadCertificateBtn.disabled = true;
-                downloadCertificateBtn.style.backgroundColor = '#ccc';
-                if (downloadMessage) downloadMessage.textContent = 'Selesaikan semua subtes untuk mengunduh sertifikat.';
-                
-                // Sembunyikan tombol pembahasan
-                if (viewPembahasanBtn) {
-                    viewPembahasanBtn.style.display = 'none';
-                }
+    if (downloadCertificateBtn) {
+        if (allCompleted) {
+            downloadCertificateBtn.disabled = false;
+            downloadCertificateBtn.style.backgroundColor = '#28a745';
+            if (downloadMessage) downloadMessage.textContent = 'Semua subtes selesai! Klik untuk mengunduh sertifikat Anda.';
+            console.log('main.js: All subtests completed. Download button enabled.');
+            
+            if (viewPembahasanBtn) {
+                viewPembahasanBtn.style.display = 'inline-block';
+            }
+
+            const leaderboardBtn = document.getElementById('viewLeaderboardBtn');
+            if (leaderboardBtn) {
+                leaderboardBtn.style.display = 'inline-block';
+            }
+
+        } else {
+            downloadCertificateBtn.disabled = true;
+            downloadCertificateBtn.style.backgroundColor = '#ccc';
+            if (downloadMessage) downloadMessage.textContent = 'Selesaikan semua subtes untuk mengunduh sertifikat.';
+            console.log('main.js: Not all subtests completed. Download button disabled.');
+
+            if (viewPembahasanBtn) {
+                viewPembahasanBtn.style.display = 'none';
+            }
+
+            const leaderboardBtn = document.getElementById('viewLeaderboardBtn');
+            if (leaderboardBtn) {
+                leaderboardBtn.style.display = 'none';
             }
         }
     }
-
-    if (downloadCertificateBtn) {
-        downloadCertificateBtn.addEventListener('click', () => {
-           
-            window.location.href = 'sertifikat.html';
-        });
-    }
-
-    // Event listener untuk tombol pembahasan
+}
     if (viewPembahasanBtn) {
         viewPembahasanBtn.addEventListener('click', () => {
-            window.location.href = 'pembahasan.html'; // Arahkan ke halaman pembahasan
+            window.location.href = 'pembahasan.html'; 
         });
     }
-
-    
+const leaderboardBtn = document.getElementById('viewLeaderboardBtn');
+if (leaderboardBtn) {
+    leaderboardBtn.addEventListener('click', () => {
+        window.location.href = 'leaderboard.html'; 
+    });
+}
+    console.log('main.js: Starting page initialization.');
     const urlParams = new URLSearchParams(window.location.search);
     const completedSubtestId = urlParams.get('subtestId');
     const finalScore = urlParams.get('score');
-    // Ambil detail jawaban dari URL jika ada
+    
     const answerDetailsString = urlParams.get('answerDetails');
     let answerDetails = [];
     if (answerDetailsString) {
@@ -187,10 +192,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     if (completedSubtestId && finalScore) {
-      
-        // Kirim detail jawaban ke fungsi saveSubtestProgress
+        console.log(`main.js: Detected completed subtest. ID: ${completedSubtestId}, Score: ${finalScore}`);
+        
         saveSubtestProgress(completedSubtestId, parseInt(finalScore), answerDetails);
-        // Clear URL parameters after processing
+        
         window.history.replaceState({}, document.title, window.location.pathname);
         console.log('main.js: URL parameters cleared.');
     }
@@ -203,9 +208,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const headerUserName = document.getElementById('headerUserName');
         const profileNav = document.getElementById('profileNav');
 
-        // Fungsi untuk memuat data profil
+        
         function loadProfileHeader() {
-            const userName = localStorage.getItem('snbtUserName') || 'Profil'; // Default 'Profil' jika belum ada nama
+            const userName = localStorage.getItem('snbtUserName') || 'Profil'; 
             const profilePicture = localStorage.getItem('snbtProfilePicture');
 
             headerUserName.textContent = userName;
@@ -213,17 +218,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (profilePicture) {
                 headerProfilePic.src = profilePicture;
             } else {
-                headerProfilePic.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA5PEwhbsNXhz2W4XBW7nQNkoGq7jQwRe9ho3K05jZ4F9b93VdyqE-zPs&s=10"; // Placeholder default
+                headerProfilePic.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA5PEwhbsNXhz2W4XBW7nQNkoGq7jQwRe9ho3K05jZ4F9b93VdyqE-zPs&s=10"; 
             }
         }
 
-        // Panggil fungsi saat halaman dimuat
+        
         loadProfileHeader();
 
-        // Tambahkan event listener untuk navigasi ke halaman profil
+        
         if (profileNav) {
             profileNav.addEventListener('click', () => {
-                window.location.href = 'profil.html'; // Arahkan ke halaman profil
+                window.location.href = 'profil.html'; 
             });
         }
     });
