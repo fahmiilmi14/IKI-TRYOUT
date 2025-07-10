@@ -1,112 +1,163 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IKI TRYOUT</title>
-    <link rel="stylesheet" href="coba.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IKI TRYOUT</title>
+  <link rel="stylesheet" href="coba.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  
+  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAgDnNJ2rw_O-JvG7grPGG9lX1xwTes2Bk",
+      authDomain: "leader-45b66.firebaseapp.com",
+      databaseURL: "https://leader-45b66-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "leader-45b66",
+      storageBucket: "leader-45b66.appspot.com",
+      messagingSenderId: "446405214951",
+      appId: "1:446405214951:web:5dc651204e05f82e4d5842"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    .modal-content input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .btn-primary1 {
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
 </head>
+
 <body>
-    <header>
-        <div class="container">
-            <h1 class="logo">IKI TRYOUT</h1>
-            <nav>
-                <ul>
-                    <li><a href="index.html#home">Beranda</a></li>
-                    <li><a href="coba.html#about">Tentang Kami</a></li>
-                    <li><a href="coba.html#tryout">Pilih Paket</a></li>
-                    <li><a href="comunity.html">Chat</a></li>
-                    <li><a href="coba.html#contact">Kontak</a></li>
-                </ul>
-            </nav>
-            <div class="profile-nav" id="profileNav">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA5PEwhbsNXhz2W4XBW7nQNkoGq7jQwRe9ho3K05jZ4F9b93VdyqE-zPs&s=10" alt="Profil" class="profile-thumb" id="headerProfilePic">
-            <span id="headerUserName">Profil</span>
+  <header>
+    <div class="container">
+      <h1 class="logo">IKI TRYOUT</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html#home">Beranda</a></li>
+          <li><a href="coba.html#about">Tentang Kami</a></li>
+          <li><a href="coba.html#tryout">Pilih Paket</a></li>
+          <li><a href="comunity.html">Chat</a></li>
+          <li><a href="coba.html#contact">Kontak</a></li>
+        </ul>
+      </nav>
+      <div class="profile-nav" id="profileNav">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA5PEwhbsNXhz2W4XBW7nQNkoGq7jQwRe9ho3K05jZ4F9b93VdyqE-zPs&s=10" alt="Profil" class="profile-thumb" id="headerProfilePic">
+        <span id="headerUserName">Profil</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="hero-section">
+      <div class="hero-content">
+        <h2 id="welcomeMessage">Selamat Datang, Peserta!</h2>
+        <p>Bersiaplah menghadapi SNBT dengan tryout interaktif kami. Latih kemampuanmu dan raih skor terbaik!</p>
+        <a href="#tryout" class="btn-primary">Mulai Tryout</a>
+      </div>
+    </section>
+
+    
+    <div id="nameModal" class="modal">
+      <div class="modal-content">
+        <h3>Masukkan Nama & Password</h3>
+        <p>Data ini digunakan untuk menyimpan progres Anda.</p>
+        <input type="text" id="userNameInput" placeholder="Nama Lengkap" />
+        <input type="password" id="userPasswordInput" placeholder="Password" />
+        <button id="saveNameBtn" class="btn-primary1">Masuk</button></br>
+        <a href="register.html">Belum punya akun? Daftar di sini</a>
+      </div>
+    </div>
+
+    <section id="tryout" class="tryout-section">
+      <div class="container">
+        <h3>Pilih Subtes Tryout Anda</h3>
+        <div id="subtestContainer" class="subtest-grid"></div>
+
+        <div class="download-certificate-section" style="margin-top: 40px; text-align: center;">
+          <button id="downloadCertificateBtn" class="btn-primary1" style="border-radius:38px"; disabled style="background-color: #28a745;">Unduh Sertifikat</button>
+          <p id="downloadMessage" style="margin-top: 10px; color: var(--gray-dark);">Selesaikan semua subtes untuk mengunduh sertifikat.</p>
+          <button id="viewPembahasanBtn" class="btn-primary" style="margin-top: 20px; display: none;">Lihat Pembahasan</button>
+          <button id="viewLeaderboardBtn" class="btn-primary" style="margin-top: 20px; display: none;">Lihat Leaderboard</button>
         </div>
+      </div>
+    </section>
+
+    <section id="about" class="about-section">
+      <div class="container">
+        <h3>Mengapa Memilih Kami?</h3>
+        <div class="features-grid">
+          <div class="feature-item">
+            <i class="fas fa-flask"></i>
+            <h4>Soal Berkualitas</h4>
+            <p>Dibuat oleh ahli dan sesuai standar SNBT terbaru.</p>
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-chart-line"></i>
+            <h4>Analisis Hasil Mendalam</h4>
+            <p>Pahami kekuatan dan kelemahanmu dengan laporan IRT.</p>
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-users"></i>
+            <h4>Komunitas Belajar</h4>
+            <p>Bergabunglah dengan ribuan siswa lainnya.</p>
+          </div>
         </div>
-    </header>
+      </div>
+    </section>
 
-    <main>
-        <section id="home" class="hero-section">
-            <div class="hero-content">
-                <h2 id="welcomeMessage">Selamat Datang, Peserta!</h2>
-                <p>Bersiaplah menghadapi SNBT dengan tryout interaktif kami. Latih kemampuanmu dan raih skor terbaik!</p>
-                <a href="#tryout" class="btn-primary">Mulai Tryout</a>
-            </div>
-        </section>
+    <section id="contact" class="contact-section" style="padding: 80px 0; text-align: center; background-color: var(--light-color);">
+      <div class="container">
+        <h3>Hubungi Kami</h3>
+        <p>Ada pertanyaan? Hubungi kami via email di nurmayadiliana@gmail.com atau WhatsApp 085732361586.</p>
+      </div>
+    </section>
+  </main>
 
-        <div id="nameModal" class="modal">
-            <div class="modal-content">
-                <h3>Masukkan Nama Anda</h3>
-                <p>Nama Anda akan digunakan untuk melacak progres tryout.</p>
-                <input type="text" id="userNameInput" placeholder="Nama Lengkap Anda" autocomplete="name">
-                <button id="saveNameBtn" class="btn-primary1">Mulai Tryout</button>
-            </div>
-        </div>
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 IKI TRYOUT. All rights reserved.</p>
+      <div class="social-links">
+        <a href="#" target="_blank">Facebook</a>
+        <a href="#" target="_blank">Instagram</a>
+      </div>
+    </div>
+  </footer>
 
-        <section id="tryout" class="tryout-section">
-            <div class="container">
-                <h3>Pilih Subtes Tryout Anda</h3>
-                <div id="subtestContainer" class="subtest-grid">
-                    </div>
-                <div class="download-certificate-section" style="margin-top: 40px; text-align: center;">
-                    <button id="downloadCertificateBtn" class="btn-primary1" disabled style="background-color: #28a745;">Unduh Sertifikat</button>
-                    <p id="downloadMessage" style="margin-top: 10px; color: var(--gray-dark);">Selesaikan semua subtes untuk mengunduh sertifikat.</p>
-                    <button id="viewPembahasanBtn" class="btn-primary" style="margin-top: 20px; display: none;">Lihat Pembahasan</button>
-                    <button id="viewLeaderboardBtn" class="btn-primary" style="margin-top: 20px; display: none;">Lihat Leaderboard</button>
-                </div>
-            </div>
-        </section>
-
-
-            </div>
-        </section>
-
-        <section id="about" class="about-section">
-            <div class="container">
-                <h3>Mengapa Memilih Kami?</h3>
-                <div class="features-grid">
-                    <div class="feature-item">
-                        <i class="fas fa-flask"></i>
-                        <h4>Soal Berkualitas</h4>
-                        <p>Dibuat oleh ahli dan sesuai standar SNBT terbaru.</p>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-chart-line"></i>
-                        <h4>Analisis Hasil Mendalam</h4>
-                        <p>Pahami kekuatan dan kelemahanmu dengan laporan IRT.</p>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-users"></i>
-                        <h4>Komunitas Belajar</h4>
-                        <p>Bergabunglah dengan ribuan siswa lainnya.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        
-        <section id="contact" class="contact-section" style="padding: 80px 0; text-align: center; background-color: var(--light-color);">
-            <div class="container">
-                <h3>Hubungi Kami</h3>
-                <p>Ada pertanyaan? Jangan ragu untuk menghubungi kami melalui email di nurmayadiliana@gmail.com atau WhatsApp 085732361586.</p>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 IKI TRYOUT. All rights reserved.</p>
-            <div class="social-links">
-                <a href="#" target="_blank">Facebook</a>
-                <a href="#" target="_blank">Instagram</a>
-            </div>
-        </div>
-    </footer>
-
-    <script src="main.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
