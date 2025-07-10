@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daftar Akun - IKI TRYOUT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #007bff;
+      --light-bg: #f0f2f5;
+      --text-dark: #333;
+      --gray-dark: #666;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--light-bg);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dark);
+    }
+
+    .register-box {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+
+    .register-box p {
+      font-size: 0.95rem;
+      color: var(--gray-dark);
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+
+    .success {
+      color: green;
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+
+    a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-box">
+    <div class="logo">IKI TRYOUT</div>
+    <p>Silakan daftar dengan nama dan password untuk mengikuti tryout.</p>
+    <input type="text" id="regNama" placeholder="Nama Lengkap" autocomplete="name" />
+    <input type="password" id="regPassword" placeholder="Password" autocomplete="new-password" />
+    <button class="btn-primary" onclick="daftarAkun()">Daftar</button>
+    <p id="regStatus"></p>
+    <p style="margin-top: 16px;">Sudah punya akun? <a href="coba.html">Login di sini</a></p>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAgDnNJ2rw_O-JvG7grPGG9lX1xwTes2Bk",
+      authDomain: "leader-45b66.firebaseapp.com",
+      databaseURL: "https://leader-45b66-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "leader-45b66",
+      storageBucket: "leader-45b66.appspot.com",
+      messagingSenderId: "446405214951",
+      appId: "1:446405214951:web:5dc651204e05f82e4d5842"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function daftarAkun() {
+      const nama = document.getElementById('regNama').value.trim();
+      const password = document.getElementById('regPassword').value.trim();
+      const status = document.getElementById('regStatus');
+
+      if (!nama || !password) {
+        status.textContent = "Nama dan password wajib diisi.";
+        status.className = "error";
+        return;
+      }
+
+      db.ref("akun").once("value").then(snapshot => {
+        const data = snapshot.val();
+        let sudahAda = false;
+
+        for (const key in data) {
+          if (data[key].nama === nama) {
+            sudahAda = true;
+            break;
+          }
+        }
+
+        if (sudahAda) {
+          status.textContent = "Nama sudah terdaftar. Silakan login.";
+          status.className = "error";
+        } else {
+          const newRef = db.ref("akun").push();
+          newRef.set({
+            nama: nama,
+            password: password,
+            skor: 0
+          }).then(() => {
+            status.textContent = "Pendaftaran berhasil! Silakan login.";
+            status.className = "success";
+            document.getElementById('regNama').value = '';
+            document.getElementById('regPassword').value = '';
+          }).catch(err => {
+            status.textContent = "Gagal mendaftar: " + err.message;
+            status.className = "error";
+          });
+        }
+      });
+    }
+  </script>
+</body>
+</html>
