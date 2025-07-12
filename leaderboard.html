@@ -5,137 +5,103 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Leaderboard IKI TRYOUT</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    :root {
-      --primary-gradient: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
-      --primary-color: #007bff;
-      --text-dark: #333;
-      --text-light: #fff;
-      --shadow-medium: rgba(0, 0, 0, 0.15);
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-
     body {
       font-family: 'Poppins', sans-serif;
-      background: var(--primary-gradient);
-      margin: 0;
-      padding: 30px 20px;
-      text-align: center;
-      color: var(--text-dark);
+      background: linear-gradient(135deg, #f0f2f5 0%, #dfe9f3 100%);
       min-height: 100vh;
+      padding: 40px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      overflow-x: hidden; 
     }
-
-    h2 {
-      color: var(--text-light);
-      font-size: 2.5em;
+    h1 {
+      font-size: 2.6em;
       margin-bottom: 30px;
-      text-shadow: 0 4px 8px var(--shadow-medium);
-      letter-spacing: 1.5px;
+      color: #007bff;
       position: relative;
-      padding-bottom: 10px;
     }
-
-    h2::after {
+    h1::after {
       content: '';
+      width: 70px;
+      height: 4px;
+      background-color: #007bff;
       position: absolute;
       left: 50%;
-      bottom: 0;
+      bottom: -10px;
       transform: translateX(-50%);
-      width: 80px;
-      height: 4px;
-      background-color: var(--text-light);
-      border-radius: 2px;
+      border-radius: 4px;
     }
-
-    .table-container {
-      max-width: 800px;
+    .leaderboard-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      max-width: 1100px;
       width: 100%;
-      background: var(--text-light);
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px var(--shadow-medium);
-      animation: slideInUp 0.8s ease-out; 
     }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      position: relative;
     }
-
-    th, td {
-      padding: 15px;
-      border-bottom: 1px solid #eee;
-      text-align: left;
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.15);
     }
-
-    th {
-      background-color: var(--primary-color);
-      color: var(--text-light);
+    .rank-icon {
+      position: absolute;
+      top: -15px;
+      right: -15px;
+      background-color: #fff;
+      padding: 10px;
+      border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .rank-icon.gold { color: #e5b100; }
+    .rank-icon.silver { color: #aaa; }
+    .rank-icon.bronze { color: #cd7f32; }
+    .rank-number {
+      font-size: 1.2em;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    .nama {
+      font-size: 1.3em;
       font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      color: #1e2a38;
+      margin-bottom: 6px;
     }
-
-    tr:nth-child(even) {
-      background-color: #f9f9f9;
+    .skor {
+      font-size: 1.1em;
+      color: #007bff;
     }
-
-    tr:hover {
-      background-color: #eef;
-      transform: scale(1.01); 
-      transition: background-color 0.2s ease, transform 0.2s ease;
-    }
-
-    td:first-child {
-      font-weight: 600;
-      color: #555;
-    }
-
-    td:last-child {
-      font-weight: 600;
-      color: var(--primary-color);
-    }
-
-    @keyframes slideInUp {
-      from { opacity: 0; transform: translateY(50px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
     @media (max-width: 480px) {
-      body {
-        padding: 20px 10px;
-      }
-
-      h2 {
+      h1 {
         font-size: 1.8em;
       }
-
-      th, td {
-        padding: 10px;
-        font-size: 0.9em;
+      .card {
+        padding: 18px;
       }
     }
   </style>
 </head>
 <body>
-  <h2>Leaderboard IKI TRYOUT</h2>
-
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th>No</th>
-          <th>Nama</th>
-          <th>Skor Rata-rata</th>
-        </tr>
-      </thead>
-      <tbody id="leaderboardBody">
-        <tr><td colspan="3" style="text-align: center;">Memuat data...</td></tr>
-      </tbody>
-    </table>
+  <h1>IKI LEADERBOARD</h1>
+  <div class="leaderboard-container" id="leaderboardGrid">
+    <p style="grid-column: 1 / -1; text-align: center;">Memuat data...</p>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-app-compat.js"></script>
@@ -153,8 +119,7 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-
-    const leaderboardBody = document.getElementById("leaderboardBody");
+    const leaderboardGrid = document.getElementById("leaderboardGrid");
 
     db.ref("leaderboard").once("value").then(snapshot => {
       const data = snapshot.val();
@@ -164,29 +129,52 @@
         const item = data[key];
         const nama = item.nama;
         const skor = Number(item.skor);
-        if (!users[nama]) users[nama] = [];
-        if (!isNaN(skor)) users[nama].push(skor);
+        const subtest = item.subtest;
+        const waktu = new Date(item.waktu).getTime();
+
+        if (!isNaN(skor)) {
+          if (!users[nama]) {
+            users[nama] = {};
+          }
+          if (!users[nama][subtest] || waktu > users[nama][subtest].waktu) {
+            users[nama][subtest] = { skor: skor, waktu: waktu };
+          }
+        }
       }
 
-      const result = Object.entries(users).map(([nama, skorList]) => {
-        const avg = Math.round(skorList.reduce((a,b)=>a+b,0) / skorList.length);
+      const result = Object.entries(users).map(([nama, subtests]) => {
+        let totalSkor = 0;
+        let numSubtests = 0;
+        for (const subtestName in subtests) {
+          totalSkor += subtests[subtestName].skor;
+          numSubtests++;
+        }
+        const avg = numSubtests > 0 ? Math.round(totalSkor / numSubtests) : 0;
         return { nama, skor: avg };
-      }).sort((a,b)=>b.skor-a.skor);
+      }).sort((a, b) => b.skor - a.skor);
 
-      leaderboardBody.innerHTML = "";
+      leaderboardGrid.innerHTML = "";
 
-      result.forEach((item, i) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${i + 1}</td>
-          <td>${item.nama}</td>
-          <td>${item.skor}</td>
-        `;
-        leaderboardBody.appendChild(row);
-      });
+      if (result.length === 0) {
+        leaderboardGrid.innerHTML = `<p style="text-align: center; grid-column: 1 / -1;">Tidak ada data leaderboard.</p>`;
+      } else {
+        result.forEach((item, i) => {
+          const div = document.createElement("div");
+          div.className = "card";
+          const iconColor = i === 0 ? "gold" : i === 1 ? "silver" : i === 2 ? "bronze" : "";
+          const icon = i === 0 ? "medal" : i === 1 ? "award" : i === 2 ? "star" : "hash";
+          div.innerHTML = `
+            <div class="rank-icon ${iconColor}" data-lucide="${icon}"></div>
+            <div class="rank-number">Peringkat ${i + 1}</div>
+            <div class="nama">${item.nama}</div>
+            <div class="skor">Skor: ${item.skor}</div>
+          `;
+          leaderboardGrid.appendChild(div);
+        });
+        lucide.createIcons();
+      }
     }).catch(error => {
-      console.error("Error fetching data:", error);
-      leaderboardBody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: red;">Gagal memuat data: ${error.message}</td></tr>`;
+      leaderboardGrid.innerHTML = `<p style="color:red; grid-column: 1 / -1;">Gagal memuat data: ${error.message}</p>`;
     });
   </script>
 </body>
